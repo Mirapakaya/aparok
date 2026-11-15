@@ -20,7 +20,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
-        android:name="com.anytypeio.anytype.app.AndroidApplication"
+        android:name="com.aparokio.aparok.app.AndroidApplication"
         android:allowBackup="false"
         android:fullBackupContent="@xml/my_backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.anytypeio.anytype.ui.main.MainActivity"
+            android:name="com.aparokio.aparok.ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize">
@@ -43,11 +43,11 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="main" />
             </intent-filter>
             <intent-filter
-                android:label="Anytype Invite"
+                android:label="Aparok Invite"
                 android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -57,7 +57,7 @@
                 <data android:host="invite.any.coop" />
             </intent-filter>
             <intent-filter
-                android:label="Anytype 1-1 Chat"
+                android:label="Aparok 1-1 Chat"
                 android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -70,7 +70,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="download.anytype.io" />
+                <data android:scheme="https" android:host="download.aparok.io" />
             </intent-filter>
             <intent-filter android:label="Link to object" android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -83,35 +83,35 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="invite" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="object" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="membership" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="hi" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="anytype" />
+                <data android:scheme="aparok" />
                 <data android:host="os-widget" />
             </intent-filter>
             <intent-filter>
@@ -190,7 +190,7 @@
             <meta-data android:name="photopicker_activity:0:required" android:value="" />
         </service>
         <service
-            android:name="com.anytypeio.anytype.device.AnytypePushService"
+            android:name="com.aparokio.aparok.device.AparokPushService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

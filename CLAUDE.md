@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Anytype is an Android client for a local-first, block-based collaborative workspace. The app uses Clean Architecture with sophisticated modular design, Jetpack Compose (hybrid with traditional Views), and integrates with a Go backend via JNI middleware.
+Aparok is an Android client for a local-first, block-based collaborative workspace. The app uses Clean Architecture with sophisticated modular design, Jetpack Compose (hybrid with traditional Views), and integrates with a Go backend via JNI middleware.
 
 ## Common Development Commands
 
@@ -57,9 +57,9 @@ UI (Compose/Views) → ViewModels → Use Cases → Repositories → Middleware 
 
 ## Key Entry Points
 
-- `/app/src/main/java/com/anytypeio/anytype/app/AndroidApplication.kt` - Application setup
-- `/app/src/main/java/com/anytypeio/anytype/di/main/MainComponent.kt` - DI root component
-- `/app/src/main/java/com/anytypeio/anytype/di/common/ComponentManager.kt` - Component lifecycle management
+- `/app/src/main/java/com/aparokio/aparoksha/aparok/AndroidApplication.kt` - Application setup
+- `/app/src/main/java/com/aparokio/aparok/di/main/MainComponent.kt` - DI root component
+- `/app/src/main/java/com/aparokio/aparok/di/common/ComponentManager.kt` - Component lifecycle management
 
 ## Development Guidelines
 

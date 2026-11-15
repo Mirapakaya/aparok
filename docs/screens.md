@@ -17,7 +17,7 @@
 
 
 [Sample App]
- - [DesignSystemActivity] activity for demonstration Anytype app design
+ - [DesignSystemActivity] activity for demonstration Aparok app design
    - [ButtonsPrimaryFragment] screen with primary buttons
    - [ButtonsSecondaryFragment] screen with secondary buttons
    - [ContentStyleFragment] typography, content text styles
