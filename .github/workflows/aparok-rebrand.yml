@@ -1,0 +1,265 @@
+name: Build Aparok APK and release
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  JAVA_VERSION: '17'
+  NDK_VERSION: 'r23c'
+
+jobs:
+  rebrand-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "Mirapakaya"
+          git config user.email "330840626+Mirapakaya@users.noreply.github.com"
+
+      - name: Sync latest upstream and rebrand
+        run: |
+          set -euo pipefail
+          # Preserve the workflow file and any custom assets across the upstream reset
+          mkdir -p /tmp/aparok-preserve/.github/workflows
+          cp .github/workflows/aparok-rebrand.yml /tmp/aparok-preserve/.github/workflows/aparok-rebrand.yml 2>/dev/null || true
+          if [[ -d assets ]]; then cp -r assets /tmp/aparok-preserve/assets 2>/dev/null || true; fi
+
+          git remote add upstream https://github.com/anyproto/anytype-kotlin.git
+          git fetch upstream main
+          git reset --hard upstream/main
+
+          # Restore preserved files
+          mkdir -p .github/workflows
+          cp /tmp/aparok-preserve/.github/workflows/aparok-rebrand.yml .github/workflows/aparok-rebrand.yml 2>/dev/null || true
+          if [[ -d /tmp/aparok-preserve/assets ]]; then
+            cp -r /tmp/aparok-preserve/assets assets
+          fi
+
+          # Move package directories
+          for dir in $(find . -type d -path '*/com/anytypeio/anytype' ! -path './.git/*'); do
+            src_root=$(dirname "$(dirname "$(dirname "$dir")")")
+            target="$src_root/com/aparokio/aparok"
+            mkdir -p "$(dirname "$target")"
+            mv "$dir" "$target"
+          done
+          for dir in $(find . -type d -path '*/io/anytype/app' ! -path './.git/*'); do
+            src_root=$(dirname "$(dirname "$(dirname "$dir")")")
+            target="$src_root/io/aparoksha/aparok"
+            mkdir -p "$(dirname "$target")"
+            mv "$dir" "$target"
+          done
+          find . -type d -empty \( -name 'anytype' -o -name 'app' -o -name 'anytypeio' \) -delete 2>/dev/null || true
+
+          # Text replacements (exclude .github to keep this workflow intact)
+          find . -type f \
+            ! -path './.git/*' \
+            ! -path './.github/*' \
+            ! -path './.gradle/*' \
+            ! -path '*/build/*' \
+            ! -path '*/.idea/*' \
+            \( -name '*.kt' -o -name '*.java' -o -name '*.xml' -o -name '*.gradle' \
+               -o -name '*.md' -o -name '*.yml' -o -name '*.yaml' -o -name '*.pro' \
+               -o -name '*.properties' -o -name '*.json' -o -name '*.txt' \
+               -o -name '*.kts' -o -name '*.sh' -o -name '*.py' -o -name '*.toml' \
+               -o -name '*.proto' \
+               -o -name 'Makefile' -o -name 'Gemfile' \) | while read -r f; do
+              sed -i \
+                -e 's/com\.anytypeio\.anytype/com\.aparokio\.aparok/g' \
+                -e 's/io\.anytype\.app/io\.aparoksha\.aparok/g' \
+                -e 's/io\/anytype\/app/io\/aparoksha\/aparok/g' \
+                -e 's/anytype:\/\//aparok:\/\//g' \
+                -e 's/Anytype/Aparok/g' \
+                -e 's/anytype/aparok/g' \
+                -e 's/ANYTYPE/APAROK/g' \
+                "$f"
+          done
+
+          # Fix upstream references that the blanket rename broke
+          find . -type f \
+            ! -path './.git/*' \
+            ! -path './.github/*' \
+            ! -path './.gradle/*' \
+            ! -path '*/build/*' \
+            ! -path '*/.idea/*' \
+            \( -name '*.kt' -o -name '*.java' -o -name '*.xml' -o -name '*.gradle' \
+               -o -name '*.md' -o -name '*.yml' -o -name '*.yaml' -o -name '*.pro' \
+               -o -name '*.properties' -o -name '*.json' -o -name '*.txt' \
+               -o -name '*.kts' -o -name '*.sh' -o -name '*.py' -o -name '*.toml' \
+               -o -name '*.proto' \) | while read -r f; do
+              sed -i \
+                -e 's/com\.aparok\./com.anytype./g' \
+                -e 's/aparok-heart-android/anytype-heart-android/g' \
+                -e 's/aparok-kotlin/anytype-kotlin/g' \
+                -e 's/anyproto\/aparok-heart/anyproto\/anytype-heart/g' \
+                -e 's/maven\.pkg\.github\.com\/anyproto\/aparok-heart/maven\.pkg\.github\.com\/anyproto\/anytype-heart/g' \
+                -e 's/github\.com\/anyproto\/aparok-kotlin/github\.com\/anyproto\/anytype-kotlin/g' \
+                -e 's/wiki\.aparok\./wiki\.anytype\./g' \
+                "$f"
+          done
+
+          # Rename any remaining files/directories that still contain "anytype"
+          find . -depth -iname '*anytype*' ! -path './.git/*' ! -path './.github/*' ! -path './.gradle/*' ! -path '*/build/*' ! -path '*/.idea/*' | while read -r f; do
+              newname=$(echo "$f" | sed 's/anytype/aparok/Ig')
+              if [[ "$f" != "$newname" ]]; then
+                  mkdir -p "$(dirname "$newname")"
+                  mv "$f" "$newname"
+              fi
+          done
+
+      - name: Unlock membership status
+        run: |
+          set -euo pipefail
+          mkdir -p domain/src/main/java/com/aparokio/aparok/domain/payments
+          cat > domain/src/main/java/com/aparokio/aparok/domain/payments/GetMembershipStatus.kt <<'KT'
+          package com.aparokio.aparok.domain.payments
+
+          import com.aparokio.aparok.core_models.membership.Membership
+          import com.aparokio.aparok.core_models.membership.MembershipPaymentMethod
+          import com.aparokio.aparok.core_models.membership.NameServiceNameType
+          import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+          import com.aparokio.aparok.domain.base.ResultInteractor
+          import com.aparokio.aparok.domain.block.repo.BlockRepository
+          import javax.inject.Inject
+
+          class GetMembershipStatus @Inject constructor(
+              dispatchers: AppCoroutineDispatchers,
+              private val repo: BlockRepository
+          ) : ResultInteractor<GetMembershipStatus.Params, Membership?>(dispatchers.io) {
+
+              override suspend fun doWork(params: Params): Membership? {
+                  return Membership(
+                      tier = 0,
+                      membershipStatusModel = Membership.Status.STATUS_ACTIVE,
+                      dateStarted = 0L,
+                      dateEnds = Long.MAX_VALUE,
+                      isAutoRenew = true,
+                      paymentMethod = MembershipPaymentMethod.METHOD_NONE,
+                      nameServiceName = "",
+                      nameServiceType = NameServiceNameType.ANY_NAME,
+                      userEmail = "",
+                      subscribeToNewsletter = false
+                  )
+              }
+
+              data class Params(val noCache: Boolean)
+          }
+          KT
+
+      - name: Generate launcher icons
+        run: |
+          set -euo pipefail
+          pip install --quiet pillow
+          python3 - <<'PY'
+          import os
+          import glob
+          from PIL import Image, ImageDraw, ImageFont
+
+          # Remove any upstream launcher icons so our PNGs don't conflict with existing WEBPs
+          for d in [
+              'app/src/main/res/mipmap-mdpi',
+              'app/src/main/res/mipmap-hdpi',
+              'app/src/main/res/mipmap-xhdpi',
+              'app/src/main/res/mipmap-xxhdpi',
+              'app/src/main/res/mipmap-xxxhdpi',
+              'app/src/main/res/mipmap-anydpi-v26'
+          ]:
+              for f in glob.glob(os.path.join(d, 'ic_launcher*')):
+                  os.remove(f)
+
+          sizes = [
+              ('app/src/main/res/mipmap-mdpi/ic_launcher.png', 48),
+              ('app/src/main/res/mipmap-hdpi/ic_launcher.png', 72),
+              ('app/src/main/res/mipmap-xhdpi/ic_launcher.png', 96),
+              ('app/src/main/res/mipmap-xxhdpi/ic_launcher.png', 144),
+              ('app/src/main/res/mipmap-xxxhdpi/ic_launcher.png', 192),
+          ]
+
+          for path, size in sizes:
+              img = Image.new('RGBA', (size, size), color=(0x1A, 0x73, 0xE8, 0xFF))
+              draw = ImageDraw.Draw(img)
+              try:
+                  font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', size // 2)
+              except Exception:
+                  font = ImageFont.load_default()
+              text = 'A'
+              bbox = draw.textbbox((0, 0), text, font=font)
+              w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+              draw.text(((size - w) / 2, (size - h) / 2 - bbox[1]), text, font=font, fill=(255, 255, 255, 255))
+              os.makedirs(os.path.dirname(path), exist_ok=True)
+              img.save(path)
+
+          os.makedirs('app/src/main/res/mipmap-anydpi-v26', exist_ok=True)
+          fg = Image.new('RGBA', (108, 108), color=(0x1A, 0x73, 0xE8, 0xFF))
+          draw = ImageDraw.Draw(fg)
+          try:
+              font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 54)
+          except Exception:
+              font = ImageFont.load_default()
+          bbox = draw.textbbox((0, 0), 'A', font=font)
+          w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
+          draw.text(((108 - w) / 2, (108 - h) / 2 - bbox[1]), 'A', font=font, fill=(255, 255, 255, 255))
+          fg.save('app/src/main/res/mipmap-anydpi-v26/ic_launcher_foreground.png')
+
+          bg = Image.new('RGBA', (108, 108), color=(0x1A, 0x73, 0xE8, 0xFF))
+          bg.save('app/src/main/res/mipmap-anydpi-v26/ic_launcher_background.png')
+          PY
+
+      - name: Commit and push Aparok identity
+        run: |
+          git add -A
+          git commit -m "Update application identity to Aparok" \
+                     -m "- Refresh upstream sources" \
+                     -m "- Update package names and strings" \
+                     -m "- Update launcher icons" \
+                     -m "- Unlock membership status" || true
+          git push origin main --force
+
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+          link-to-sdk: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Create github.properties
+        run: |
+          echo "gpr.usr=${{ github.actor }}" > github.properties
+          echo "gpr.key=${{ secrets.GITHUB_TOKEN }}" >> github.properties
+
+      - name: Create apikeys.properties
+        run: |
+          cat > apikeys.properties <<EOF
+          amplitude.debug="7a89074cccfe74d8f73d7e3370a35bac"
+          amplitude.release="3224193e55d9abcdad1b7ff9e853c77b"
+          sentry_dsn="https://b7e10132f5fef2db3c5b1c58d4f184eb@o4512434703040512.ingest.de.sentry.io/4512434712412240"
+          EOF
+
+      - name: Generate debug keystore
+        run: |
+          keytool -genkey -v -keystore aparok.keystore -alias aparok -keyalg RSA -keysize 2048 -validity 10000 -storepass aparokpass -keypass aparokpass -dname "CN=Aparok"
+
+      - name: Build release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease -Pandroid.injected.signing.store.file=$PWD/aparok.keystore -Pandroid.injected.signing.store.password=aparokpass -Pandroid.injected.signing.key.alias=aparok -Pandroid.injected.signing.key.password=aparokpass
+
+      - name: Upload APK and create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: aparok-release-${{ github.run_number }}
+          name: Aparok Release Build ${{ github.run_number }}
+          files: app/build/outputs/apk/release/*.apk
+          body: "Aparok release APK build"

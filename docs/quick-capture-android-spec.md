@@ -1,7 +1,7 @@
 # Quick Capture — Android Implementation Spec
 
 **Status:** Implemented behind the `quickCapture` / `quickCaptureTypeSuggestions` experimental flags (2026-08-28); device-verification items in §13 still open · **Date:** 2026-08-28
-**Source of product decisions:** `anytype-swift/quick-capture-handoff.md` (iOS v1, IOS-6617). This spec maps that platform-neutral contract onto the anytype-kotlin codebase and resolves the Android-specific questions (editor embedding, space activation, on-device AI runtime).
+**Source of product decisions:** `aparok-swift/quick-capture-handoff.md` (iOS v1, IOS-6617). This spec maps that platform-neutral contract onto the anytype-kotlin codebase and resolves the Android-specific questions (editor embedding, space activation, on-device AI runtime).
 
 **Goal:** capture a thought into the right space in 2 taps — tap pencil → keyboard is up in the right space → type → send. Local AI suggests the object type. Capture must never block on AI.
 
@@ -129,7 +129,7 @@ Retarget the current thought, don't swap drafts:
 
 - Empty current draft → just open/create the target space's draft (per §5), tear down and recreate the child editor fragment with the new `ctx`/`space` args (the editor DI component is keyed by ctx — `ComponentManager.kt:260` — so distinct drafts get distinct components).
 - Non-empty → new domain use case `MoveQuickCaptureDraft(from, to)`:
-  1. `repo.copy(Command.Copy(context = oldDraft, range = null, blocks = allBlocks))` — use the repository directly, **not** the `Copy` use case (`domain/.../clipboard/Copy.kt:9`), which also writes the user's system clipboard via `AnytypeClipboardStorage`; clobbering the OS clipboard as a side effect of switching a chip is unacceptable. `Command.Copy`/`Command.Paste` carry no space id (`Command.kt:427/:410`) and the middleware resolves by `contextId`, so cross-space copy→paste is a legal sequence.
+  1. `repo.copy(Command.Copy(context = oldDraft, range = null, blocks = allBlocks))` — use the repository directly, **not** the `Copy` use case (`domain/.../clipboard/Copy.kt:9`), which also writes the user's system clipboard via `AparokClipboardStorage`; clobbering the OS clipboard as a side effect of switching a chip is unacceptable. `Command.Copy`/`Command.Paste` carry no space id (`Command.kt:427/:410`) and the middleware resolves by `contextId`, so cross-space copy→paste is a legal sequence.
   2. Create the target draft (§5 create path; same type where it exists in the target space — resolve by `uniqueKey` with a space-scoped search; else target-space default type). Replace (delete) the target space's previously saved draft, if any.
   3. Add a first empty text block (precedent for block-creation without opening the object: `CreatePrefilledNote.kt:17`), then `repo.paste(...)` with the copy response's block slot into that block.
   4. Delete the old draft, update both space pointers.

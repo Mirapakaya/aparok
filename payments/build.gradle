@@ -9,7 +9,7 @@ android {
         compose true
     }
 
-    namespace 'com.anytypeio.anytype.payments'
+    namespace 'com.aparokio.aparok.payments'
 
     testOptions {
         unitTests.returnDefaultValues = true

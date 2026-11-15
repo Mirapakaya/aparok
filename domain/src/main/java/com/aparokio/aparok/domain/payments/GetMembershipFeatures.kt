@@ -1,0 +1,17 @@
+package com.aparokio.aparok.domain.payments
+
+import com.aparokio.aparok.core_models.membership.MembershipFeatures
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.base.ResultInteractor
+import com.aparokio.aparok.domain.block.repo.BlockRepository
+import javax.inject.Inject
+
+class GetMembershipFeatures @Inject constructor(
+    private val repo: BlockRepository,
+    dispatchers: AppCoroutineDispatchers
+) : ResultInteractor<Unit, MembershipFeatures>(dispatchers.io) {
+
+    override suspend fun doWork(params: Unit): MembershipFeatures {
+        return repo.membershipV2GetFeatures()
+    }
+}
