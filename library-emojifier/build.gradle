@@ -16,5 +16,5 @@ dependencies {
 }
 
 android {
-    namespace 'com.anytypeio.anytype.emojifier'
+    namespace 'com.aparokio.aparok.emojifier'
 }

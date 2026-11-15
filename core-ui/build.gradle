@@ -17,7 +17,7 @@ android {
         compose true
     }
 
-    namespace 'com.anytypeio.anytype.core_ui'
+    namespace 'com.aparokio.aparok.core_ui'
 }
 
 dependencies {

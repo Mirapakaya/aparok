@@ -15,5 +15,5 @@ dependencies {
 }
 
 android {
-    namespace 'com.anytypeio.anytype.test_utils'
+    namespace 'com.aparokio.aparok.test_utils'
 }

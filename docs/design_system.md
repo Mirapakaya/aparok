@@ -6,7 +6,7 @@ Buttons link: https://www.figma.com/file/vgXV7x2v20vJajc7clYJ7a/Mobile-Design-Sy
 
 Key points for non-Compose styles:
 
-Text styles are located in the design_system file (android-anytype/core-ui/src/main/res/values/design_system.xml).
+Text styles are located in the design_system file (android-aparok/core-ui/src/main/res/values/design_system.xml).
 Example: TextView.ContentStyle.Headline.Title
 
 Button styles are also located in the design_system file.

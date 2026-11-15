@@ -4,7 +4,7 @@
 - **Status:** Proposed (pending approval)
 - **Scope:** `NetworkConnectionStatusImpl` + `networkId` plumbing (`commands.proto` → `BlockRepository` → `Middleware`)
 - **Type:** Contract compliance + latent-bug fix (sync recovery after network switches)
-- **Ticket:** DROID-4548 (Android side of GO-7379 / anytype-heart PR #3211)
+- **Ticket:** DROID-4548 (Android side of GO-7379 / aparok-heart PR #3211)
 - **Heart contract:** `docs/mobile-network-integration.md` @ `go-7379-snappy-sync-connection-recovery`
 
 ## 1. Background & problem
@@ -56,7 +56,7 @@ Add field 2, copied **verbatim** from heart `go-7379` (`pb/protos/commands.proto
 
 ```proto
 message Request {
-    anytype.model.DeviceNetworkType deviceNetworkType = 1;
+    aparok.model.DeviceNetworkType deviceNetworkType = 1;
     // opaque identity of the current network path as reported by the OS
     // (iOS: NWPath interfaces/gateway digest; Android: Network#getNetworkHandle()).
     // When it changes while the type stays the same (Wi-Fi to Wi-Fi switch,
@@ -114,7 +114,7 @@ private val networkCallback = object : ConnectivityManager.NetworkCallback() {
 // Transport only. Deliberately NOT gated on NET_CAPABILITY_VALIDATED:
 // validation gates internet, but a LAN-only network (or a captive portal)
 // still syncs over local P2P, and heart throttles NOT_CONNECTED devices.
-// See anytype-heart 8a2fa9d91.
+// See aparok-heart 8a2fa9d91.
 private fun mapNetworkType(caps: NetworkCapabilities?): DeviceNetworkType = when {
     caps == null -> DeviceNetworkType.NOT_CONNECTED
     caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> DeviceNetworkType.CELLULAR
@@ -263,7 +263,7 @@ onCapabilitiesChanged(net, caps)        [CM thread, serialized]
 
 ## 6. Testing
 
-New: `device/src/test/java/com/anytypeio/anytype/device/network_type/NetworkConnectionStatusImplTest.kt`. Robolectric 4.11.1, mockito-kotlin and coroutine-testing are already on `device`'s test classpath — no dependency changes. Callbacks are retrieved via `shadowOf(connectivityManager).networkCallbacks` and invoked directly; assertions are `verify` on a mocked `BlockRepository`.
+New: `device/src/test/java/com/aparokio/aparok/device/network_type/NetworkConnectionStatusImplTest.kt`. Robolectric 4.11.1, mockito-kotlin and coroutine-testing are already on `device`'s test classpath — no dependency changes. Callbacks are retrieved via `shadowOf(connectivityManager).networkCallbacks` and invoked directly; assertions are `verify` on a mocked `BlockRepository`.
 
 | Test | Asserts |
 |---|---|
@@ -295,7 +295,7 @@ New: `device/src/test/java/com/anytypeio/anytype/device/network_type/NetworkConn
 - `Middleware.setDeviceNetworkState` has its `logRequestIfDebug`/`logResponseIfDebug` calls commented out (`Middleware.kt:3324,3326`) and discards the response.
 - This path bypasses the use-case layer, unlike the sibling `SetAppState`.
 - `LocalNetworkAddressProvider.start()` is fire-and-forget on `GlobalScope`, leaving a startup window where Go's `interfaceGetter` is nil and `GetInterfacesAddrs()` errors.
-- Patch `docs/mobile-network-integration.md` in anytype-heart for the `onLost` correction (§3.4).
+- Patch `docs/mobile-network-integration.md` in aparok-heart for the `onLost` correction (§3.4).
 
 ## 9. Sequencing
 
