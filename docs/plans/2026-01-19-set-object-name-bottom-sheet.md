@@ -13,7 +13,7 @@
 ## Task 1: Add State to ObjectSetViewModel
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt`
 
 **Step 1: Add the state data class**
 
@@ -46,13 +46,13 @@ val setObjectNameState: StateFlow<SetObjectNameState> = _setObjectNameState.asSt
 Add at top of file:
 
 ```kotlin
-import com.anytypeio.anytype.presentation.objects.ObjectIcon
+import com.aparokio.aparok.presentation.objects.ObjectIcon
 ```
 
 **Step 4: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt
 git commit -m "feat(DROID-3986): add SetObjectNameState to ObjectSetViewModel"
 ```
 
@@ -61,7 +61,7 @@ git commit -m "feat(DROID-3986): add SetObjectNameState to ObjectSetViewModel"
 ## Task 2: Add ViewModel Methods for Name Sheet
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt`
 
 **Step 1: Add method to show the bottom sheet**
 
@@ -193,13 +193,13 @@ fun onSetObjectNameOpenClicked() {
 Ensure this import exists:
 
 ```kotlin
-import com.anytypeio.anytype.core_models.Relations
+import com.aparokio.aparok.core_models.Relations
 ```
 
 **Step 7: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt
 git commit -m "feat(DROID-3986): add methods for SetObjectName bottom sheet"
 ```
 
@@ -208,7 +208,7 @@ git commit -m "feat(DROID-3986): add methods for SetObjectName bottom sheet"
 ## Task 3: Update proceedWithNewDataViewObject to Use New Sheet
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt`
 
 **Step 1: Find and modify proceedWithNewDataViewObject**
 
@@ -240,7 +240,7 @@ else -> {
 **Step 2: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt
 git commit -m "feat(DROID-3986): use Compose sheet instead of Fragment for naming"
 ```
 
@@ -249,12 +249,12 @@ git commit -m "feat(DROID-3986): use Compose sheet instead of Fragment for namin
 ## Task 4: Create SetObjectNameBottomSheet Composable
 
 **Files:**
-- Create: `core-ui/src/main/java/com/anytypeio/anytype/core_ui/features/sets/SetObjectNameBottomSheet.kt`
+- Create: `core-ui/src/main/java/com/aparokio/aparok/core_ui/features/sets/SetObjectNameBottomSheet.kt`
 
 **Step 1: Create the file with imports and state**
 
 ```kotlin
-package com.anytypeio.anytype.core_ui.features.sets
+package com.aparokio.aparok.core_ui.features.sets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -298,11 +298,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.anytypeio.anytype.core_ui.R
-import com.anytypeio.anytype.core_ui.foundation.noRippleClickable
-import com.anytypeio.anytype.core_ui.views.PreviewTitle1Medium
-import com.anytypeio.anytype.core_ui.widgets.ListWidgetObjectIcon
-import com.anytypeio.anytype.presentation.objects.ObjectIcon
+import com.aparokio.aparok.core_ui.R
+import com.aparokio.aparok.core_ui.foundation.noRippleClickable
+import com.aparokio.aparok.core_ui.views.PreviewTitle1Medium
+import com.aparokio.aparok.core_ui.widgets.ListWidgetObjectIcon
+import com.aparokio.aparok.presentation.objects.ObjectIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -423,7 +423,7 @@ fun SetObjectNameBottomSheet(
 **Step 2: Commit**
 
 ```bash
-git add core-ui/src/main/java/com/anytypeio/anytype/core_ui/features/sets/SetObjectNameBottomSheet.kt
+git add core-ui/src/main/java/com/aparokio/aparok/core_ui/features/sets/SetObjectNameBottomSheet.kt
 git commit -m "feat(DROID-3986): create SetObjectNameBottomSheet composable"
 ```
 
@@ -432,7 +432,7 @@ git commit -m "feat(DROID-3986): create SetObjectNameBottomSheet composable"
 ## Task 5: Add Icon Picker Bottom Sheet Wrapper
 
 **Files:**
-- Modify: `core-ui/src/main/java/com/anytypeio/anytype/core_ui/features/sets/SetObjectNameBottomSheet.kt`
+- Modify: `core-ui/src/main/java/com/aparokio/aparok/core_ui/features/sets/SetObjectNameBottomSheet.kt`
 
 **Step 1: Add the nested icon picker composable**
 
@@ -443,7 +443,7 @@ Add after the `SetObjectNameBottomSheet` function:
 @Composable
 fun SetObjectIconPickerBottomSheet(
     isVisible: Boolean,
-    views: List<com.anytypeio.anytype.presentation.picker.EmojiPickerView>,
+    views: List<com.aparokio.aparok.presentation.picker.EmojiPickerView>,
     onEmojiClicked: (String) -> Unit,
     onQueryChanged: (String) -> Unit,
     onDismiss: () -> Unit
@@ -458,7 +458,7 @@ fun SetObjectIconPickerBottomSheet(
         containerColor = colorResource(id = R.color.background_secondary),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
-        com.anytypeio.anytype.core_ui.widgets.EmojiPickerScreen(
+        com.aparokio.aparok.core_ui.widgets.EmojiPickerScreen(
             views = views,
             onEmojiClicked = onEmojiClicked,
             onQueryChanged = onQueryChanged,
@@ -471,13 +471,13 @@ fun SetObjectIconPickerBottomSheet(
 **Step 2: Add missing import**
 
 ```kotlin
-import com.anytypeio.anytype.presentation.picker.EmojiPickerView
+import com.aparokio.aparok.presentation.picker.EmojiPickerView
 ```
 
 **Step 3: Commit**
 
 ```bash
-git add core-ui/src/main/java/com/anytypeio/anytype/core_ui/features/sets/SetObjectNameBottomSheet.kt
+git add core-ui/src/main/java/com/aparokio/aparok/core_ui/features/sets/SetObjectNameBottomSheet.kt
 git commit -m "feat(DROID-3986): add SetObjectIconPickerBottomSheet"
 ```
 
@@ -525,7 +525,7 @@ git commit -m "feat(DROID-3986): add open-to-edit icon"
 ## Task 7: Add Emoji State to ObjectSetViewModel
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt`
 
 **Step 1: Add emoji provider and suggester as dependencies**
 
@@ -602,8 +602,8 @@ fun onEmojiQueryChanged(query: String) {
 **Step 4: Add required imports**
 
 ```kotlin
-import com.anytypeio.anytype.presentation.picker.EmojiPickerView
-import com.anytypeio.anytype.emojifier.data.Emoji
+import com.aparokio.aparok.presentation.picker.EmojiPickerView
+import com.aparokio.aparok.emojifier.data.Emoji
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 ```
@@ -624,7 +624,7 @@ fun onSetObjectNameIconClicked() {
 **Step 6: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt
 git commit -m "feat(DROID-3986): add emoji picker state to ObjectSetViewModel"
 ```
 
@@ -633,7 +633,7 @@ git commit -m "feat(DROID-3986): add emoji picker state to ObjectSetViewModel"
 ## Task 8: Integrate Bottom Sheet in ObjectSetFragment
 
 **Files:**
-- Modify: `app/src/main/java/com/anytypeio/anytype/ui/sets/ObjectSetFragment.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/ui/sets/ObjectSetFragment.kt`
 
 **Step 1: Add ComposeView for the bottom sheet in XML or programmatically**
 
@@ -669,8 +669,8 @@ binding.setObjectNameSheet.apply {
 **Step 2: Add imports**
 
 ```kotlin
-import com.anytypeio.anytype.core_ui.features.sets.SetObjectNameBottomSheet
-import com.anytypeio.anytype.core_ui.features.sets.SetObjectIconPickerBottomSheet
+import com.aparokio.aparok.core_ui.features.sets.SetObjectNameBottomSheet
+import com.aparokio.aparok.core_ui.features.sets.SetObjectIconPickerBottomSheet
 ```
 
 **Step 3: Add ComposeView to layout XML**
@@ -687,7 +687,7 @@ Add to `fragment_object_set.xml` (or equivalent):
 **Step 4: Commit**
 
 ```bash
-git add app/src/main/java/com/anytypeio/anytype/ui/sets/ObjectSetFragment.kt
+git add app/src/main/java/com/aparokio/aparok/ui/sets/ObjectSetFragment.kt
 git add app/src/main/res/layout/fragment_object_set.xml
 git commit -m "feat(DROID-3986): integrate SetObjectNameBottomSheet in fragment"
 ```
@@ -697,8 +697,8 @@ git commit -m "feat(DROID-3986): integrate SetObjectNameBottomSheet in fragment"
 ## Task 9: Remove Old Navigation to SetNameForCreatedObject
 
 **Files:**
-- Modify: `app/src/main/java/com/anytypeio/anytype/ui/sets/ObjectSetFragment.kt`
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetCommand.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/ui/sets/ObjectSetFragment.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetCommand.kt`
 
 **Step 1: Remove command handler in fragment**
 
@@ -719,8 +719,8 @@ data class SetNameForCreatedObject(
 **Step 3: Commit**
 
 ```bash
-git add app/src/main/java/com/anytypeio/anytype/ui/sets/ObjectSetFragment.kt
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetCommand.kt
+git add app/src/main/java/com/aparokio/aparok/ui/sets/ObjectSetFragment.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetCommand.kt
 git commit -m "refactor(DROID-3986): remove SetNameForCreatedObject command"
 ```
 
@@ -729,8 +729,8 @@ git commit -m "refactor(DROID-3986): remove SetNameForCreatedObject command"
 ## Task 10: Add EmojiProvider and EmojiSuggester to ObjectSetViewModel
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/feature/ObjectSetDI.kt` (or equivalent DI file)
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/feature/ObjectSetDI.kt` (or equivalent DI file)
 
 **Step 1: Add dependencies to ViewModel constructor**
 
@@ -744,8 +744,8 @@ private val emojiSuggester: EmojiSuggester,
 **Step 2: Add imports**
 
 ```kotlin
-import com.anytypeio.anytype.emojifier.data.EmojiProvider
-import com.anytypeio.anytype.emojifier.suggest.EmojiSuggester
+import com.aparokio.aparok.emojifier.data.EmojiProvider
+import com.aparokio.aparok.emojifier.suggest.EmojiSuggester
 ```
 
 **Step 3: Update ViewModel Factory**
@@ -759,8 +759,8 @@ Ensure EmojiProvider and EmojiSuggester are provided in the ObjectSet DI compone
 **Step 5: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/sets/ObjectSetViewModel.kt
-git add app/src/main/java/com/anytypeio/anytype/di/feature/ObjectSetDI.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/sets/ObjectSetViewModel.kt
+git add app/src/main/java/com/aparokio/aparok/di/feature/ObjectSetDI.kt
 git commit -m "feat(DROID-3986): inject emoji dependencies into ObjectSetViewModel"
 ```
 
@@ -821,7 +821,7 @@ git commit -m "fix(DROID-3986): address testing feedback"
 ## Task 12: Clean Up Old Files (Optional)
 
 **Files:**
-- Consider removing: `app/src/main/java/com/anytypeio/anytype/ui/sets/modals/SetObjectCreateRecordFragment*.kt`
+- Consider removing: `app/src/main/java/com/aparokio/aparok/ui/sets/modals/SetObjectCreateRecordFragment*.kt`
 - Consider removing: Navigation entries for old screen
 
 **Only do this after confirming new implementation works correctly.**
@@ -829,7 +829,7 @@ git commit -m "fix(DROID-3986): address testing feedback"
 **Step 1: Remove old fragment files**
 
 ```bash
-rm app/src/main/java/com/anytypeio/anytype/ui/sets/modals/SetObjectCreateRecordFragment*.kt
+rm app/src/main/java/com/aparokio/aparok/ui/sets/modals/SetObjectCreateRecordFragment*.kt
 ```
 
 **Step 2: Remove navigation entries**

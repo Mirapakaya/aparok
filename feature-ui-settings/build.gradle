@@ -12,7 +12,7 @@ android {
         compose true
     }
 
-    namespace 'com.anytypeio.anytype.ui_settings'
+    namespace 'com.aparokio.aparok.ui_settings'
 }
 
 dependencies {

@@ -22,7 +22,7 @@ per-event `withContext(Dispatchers.IO)` hop before emitting to `EventHandlerChan
 ### Confirmed facts (from research)
 
 - **The gomobile callback is synchronous and sequential** (HIGH confidence, sourced from the
-  anytype-heart Go side): `MessageHandler.Handle([]byte)` returns `void`; Go calls it inline, one
+  aparok-heart Go side): `MessageHandler.Handle([]byte)` returns `void`; Go calls it inline, one
   event at a time, blocking the Go thread until the JVM lambda returns. So the **source emits in
   strict order, single-producer**. The callback **cannot suspend**, **must return fast**, and
   **must not throw** (an uncaught exception crosses JNI and aborts the Go runtime).
@@ -83,11 +83,11 @@ gomobile callback (Go thread, sequential)
 ### Full implementation
 
 ```kotlin
-package com.anytypeio.anytype.middleware.interactor
+package com.aparokio.aparok.middleware.interactor
 
-import anytype.Event
-import com.anytypeio.anytype.data.auth.status.SyncAndP2PStatusEventsStore
-import com.anytypeio.anytype.middleware.EventProxy
+import aparok.Event
+import com.aparokio.aparok.data.auth.status.SyncAndP2PStatusEventsStore
+import com.aparokio.aparok.middleware.EventProxy
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException

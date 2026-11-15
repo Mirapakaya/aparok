@@ -1,4 +1,4 @@
-# Change log for Android @Anytype app.
+# Change log for Android @Aparok app.
 
 ## Version 0.22.6
 
@@ -187,7 +187,7 @@
 * Search | Keyboard should be dismissed when navigating from search results to sets of objects (#2416)
 * Sets | Grid View headers should show or hide object icon in row headers according to the view settings (#2408)
 * Sets | Updated screen text for sorts for checkbox relations (#2424)
-* App | Fixed application startup error when resuming Anytype after app is killed by the Android OS to release resources (#2447) 
+* App | Fixed application startup error when resuming Aparok after app is killed by the Android OS to release resources (#2447) 
 * App | Resolved flaking remaining days count issue after account deletion (#2414)
 
 ### Design & UX 🔳
@@ -265,7 +265,7 @@
 * Editor | Breakthrough style is renamed to Strikethrough (#2189)
 * Editor | Show meaningful message when failed to open file by an existing application (#2163)  
 * Sets | Gallery view might show object name twice (#2251)
-* App | About-app screen should display Anytype user ID instead of profile object ID (#2172)
+* App | About-app screen should display Aparok user ID instead of profile object ID (#2172)
 * Search | Search screen does not display updated search query when search results are missing (#2202)  
 * Auth | Show/hide keyboard automatically when needed (#2207)
 * Relations | When you create a new relation, default format is object now (#2196)
@@ -364,9 +364,9 @@
 
 ### Fixes & tech 🚒
 
-* Relations | When opening date-format value for a relation, then exiting to your device's home screen, then returning back to Anytype caused application crash (#2060)
+* Relations | When opening date-format value for a relation, then exiting to your device's home screen, then returning back to Aparok caused application crash (#2060)
 * Sets | Fixes in Number, Date, and Checkbox filters (#2057)
-* App | Create a new object via app shortcuts wouldn't work correctly if Anytype is already open in background (#2056)
+* App | Create a new object via app shortcuts wouldn't work correctly if Aparok is already open in background (#2056)
 * Tech | Fix missing file keys (#1353)
 
 ## Version 0.5.1
@@ -467,7 +467,7 @@
 * App | Resume whatever you were up to restoring the last opened object or the last opened set on application start (#1851)
 * App | Displaying shortcut actions when clicking on your App's icon (#1888)
 * App | On-the-go: introducing "Note" as a new type with a specific layout (#1852)
-* Settings | Setup a default type for your Anytype. When creating a new object, your default type will be used (#1873)
+* Settings | Setup a default type for your Aparok. When creating a new object, your default type will be used (#1873)
 * Editor | New markup: add links to objects, not only URLs! (#1893)
 * Editor | Opening a file by default app on device instead of downloading it when clicked (#1904)
 * Editor | Drag & drop (position above, below or inside) (#1848)
@@ -561,9 +561,9 @@
 * Editor | Fixed: @-character left in a text block triggers mention events when entering multi-select mode after reopening this object (#1731) 
 * Editor | Fixed: Pressing "Action Go" on the keyboard in description block crashes the app if there is no other focusable text block below (#1725)
 * Data View | Navigating to media objects (file, video, image) from sets (#1729, #1730)
-* Data View | Fixed: Starting editing title for a set of objects in loading/initialization state would crash Anytype (#1738)  
+* Data View | Fixed: Starting editing title for a set of objects in loading/initialization state would crash Aparok (#1738)  
 * Relations | Fixed: Failing to navigate to an object from relation value (#1737)
-* Relations | Fixed: Failing to find corresponding option meta data for tag or status would crash Anytype (#1738)
+* Relations | Fixed: Failing to find corresponding option meta data for tag or status would crash Aparok (#1738)
 
 ### Design & UX 🔳
 
@@ -711,7 +711,7 @@
 
 ### Fixes & tech 🚒
 
-* Adding files from device's recent files menu will no longer crash Anytype (#1381)
+* Adding files from device's recent files menu will no longer crash Aparok (#1381)
 * App supports two build variants: stable and experimental  (#1391)
 
 ### Middleware ⚙
@@ -1197,7 +1197,7 @@
 
 * Support suggestions for custom keyboards (#466)
 * Should ignore split-line `enter` press in document's title (#513)
-* Setting cursor when pasting from anytype clipboard (#484)
+* Setting cursor when pasting from aparok clipboard (#484)
 * Should focus document's title when first paragraph (as the first block in the document) is deleted (#498)
 
 ## Version 0.0.34
@@ -1225,7 +1225,7 @@
 
 ### New features 🚀
 
-* Select text and copy-paste inside Anytype. First iteration (#467)
+* Select text and copy-paste inside Aparok. First iteration (#467)
 * Copy and paste multiple blocks in multi-select mode. First iteration (#467)
 
 ### Design & UX 🔳
@@ -1241,7 +1241,7 @@
 
 ### New features 🚀
 
-* User can paste from web to Anytype. First iteration (#447)
+* User can paste from web to Aparok. First iteration (#447)
 * Turn-into in multi-select mode for text blocks (#458)
 * All media blocks can be selected in multi-select mode (#427, #428)
 
