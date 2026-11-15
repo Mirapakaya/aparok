@@ -17,7 +17,7 @@ android {
         includeDependenciesReport = true
     }
 
-    namespace 'com.anytypeio.anytype.crash_reporting'
+    namespace 'com.aparokio.aparok.crash_reporting'
 }
 
 dependencies {

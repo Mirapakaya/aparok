@@ -1,5 +1,5 @@
 syntax = "proto3";
-package anytype;
+package aparok;
 option go_package = "pb";
 
 import "models.proto";
@@ -861,7 +861,7 @@ message Rpc {
                 string networkCustomConfigFilePath = 7; // config path for the custom network mode            }
                 bool preferYamuxTransport = 8; // optional, default is false, recommended in case of problems with QUIC transport
                 string jsonApiListenAddr = 9; // optional, if empty json api will not be started; 127.0.0.1:31009 should be the default one
-                string joinStreamUrl = 10; // anytype:// schema URL to join an embed stream
+                string joinStreamUrl = 10; // aparok:// schema URL to join an embed stream
                 // if true - will run membership v2 polling loop, v2 methods will be available
                 // if false - will run membership v1 polling loop, v2 methods will return error
                 bool enableMembershipV2 = 11; // optional, default is false
@@ -871,7 +871,7 @@ message Rpc {
             */
             message Response {
                 Error error = 1; // Error while trying to create an account
-                anytype.model.Account account = 2; // A newly created account; In case of a failure, i.e. error is non-NULL, the account model should contain empty/default-value fields
+                aparok.model.Account account = 2; // A newly created account; In case of a failure, i.e. error is non-NULL, the account model should contain empty/default-value fields
                 Config config = 3; // deprecated, use account, GO-1926
                 message Error {
                     Code code = 1;
@@ -888,7 +888,7 @@ message Rpc {
                         FAILED_TO_WRITE_CONFIG = 105;
                         FAILED_TO_CREATE_LOCAL_REPO = 106;
                         ACCOUNT_CREATION_IS_CANCELED = 107;
-                        ANOTHER_ANYTYPE_PROCESS_IS_RUNNING = 108;
+                        ANOTHER_APAROK_PROCESS_IS_RUNNING = 108;
 
                         CONFIG_FILE_NOT_FOUND = 200;
                         CONFIG_FILE_INVALID = 201;
@@ -932,7 +932,7 @@ message Rpc {
 
             message Response {
                 Error error = 1; // Error while trying to recover an account
-                anytype.model.Account.Status status = 2;
+                aparok.model.Account.Status status = 2;
 
                 message Error {
                     Code code = 1;
@@ -956,7 +956,7 @@ message Rpc {
 
             message Response {
                 Error error = 1; // Error while trying to recover an account
-                anytype.model.Account.Status status = 2;
+                aparok.model.Account.Status status = 2;
 
                 message Error {
                     Code code = 1;
@@ -1008,7 +1008,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                anytype.Event.Account.Recovery.Snapshot snapshot = 2;
+                aparok.Event.Account.Recovery.Snapshot snapshot = 2;
 
                 message Error {
                     Code code = 1;
@@ -1046,7 +1046,7 @@ message Rpc {
                         ACCOUNT_NOT_FOUND = 101;
                         CANCELED = 102;
                         NOT_ENOUGH_FREE_SPACE = 103; // TODO: [storage] Add specific error codes for migration problems
-                        ANOTHER_ANYTYPE_PROCESS_IS_RUNNING = 108;
+                        ANOTHER_APAROK_PROCESS_IS_RUNNING = 108;
                     }
                 }
             }
@@ -1086,7 +1086,7 @@ message Rpc {
                 bool preferYamuxTransport = 6; // optional, default is false, recommended in case of problems with QUIC transport
                 string jsonApiListenAddr = 7; // optional, if empty json api will not be started; 127.0.0.1:31009 should be the default one
                 string fulltextPrimaryLanguage = 8; // optional, default fts language
-                string joinStreamURL = 9; // anytype:// schema URL to join an embed stream
+                string joinStreamURL = 9; // aparok:// schema URL to join an embed stream
                 // if true - will run membership v2 polling loop, v2 methods will be available
                 // if false - will run membership v1 polling loop, v2 methods will return error
                 bool enableMembershipV2 = 10; // optional, default is false
@@ -1098,7 +1098,7 @@ message Rpc {
             */
             message Response {
                 Error error = 1; // Error while trying to launch/select an account
-                anytype.model.Account account = 2; // Selected account
+                aparok.model.Account account = 2; // Selected account
                 Config config = 3; // deprecated, use account, GO-1926
                 message Error {
                     Code code = 1;
@@ -1115,7 +1115,7 @@ message Rpc {
                         FAILED_TO_FIND_ACCOUNT_INFO = 104;
                         LOCAL_REPO_NOT_EXISTS_AND_MNEMONIC_NOT_SET = 105;
                         FAILED_TO_STOP_SEARCHER_NODE = 106;
-                        ANOTHER_ANYTYPE_PROCESS_IS_RUNNING = 108;
+                        ANOTHER_APAROK_PROCESS_IS_RUNNING = 108;
                         FAILED_TO_FETCH_REMOTE_NODE_HAS_INCOMPATIBLE_PROTO_VERSION = 110;
                         ACCOUNT_IS_DELETED = 111;
                         ACCOUNT_LOAD_IS_CANCELED = 112;
@@ -1275,7 +1275,7 @@ message Rpc {
                         UNKNOWN_ERROR = 1;
                         BAD_INPUT = 2;
                         DIFFERENT_ACCOUNT = 3;
-                        ANOTHER_ANYTYPE_PROCESS_IS_RUNNING = 108;
+                        ANOTHER_APAROK_PROCESS_IS_RUNNING = 108;
                     }
                 }
             }
@@ -1623,7 +1623,7 @@ message Rpc {
         message Create {
             message Request {
                 google.protobuf.Struct details = 1; // object details
-                anytype.Rpc.Object.ImportUseCase.Request.UseCase useCase = 2; // use case
+                aparok.Rpc.Object.ImportUseCase.Request.UseCase useCase = 2; // use case
                 bool withChat = 3; // deprecated, use spaceType
             }
 
@@ -2016,7 +2016,7 @@ message Rpc {
                         BAD_INPUT = 2;
 
                         NOT_FOUND = 3;
-                        ANYTYPE_NEEDS_UPGRADE = 10; // failed to read unknown data format – need to upgrade anytype
+                        APAROK_NEEDS_UPGRADE = 10; // failed to read unknown data format – need to upgrade aparok
                         OBJECT_DELETED = 4;
                         // ...
                     }
@@ -2072,7 +2072,7 @@ message Rpc {
                         BAD_INPUT = 2;
                         NOT_FOUND = 3;
                         OBJECT_DELETED = 4;
-                        ANYTYPE_NEEDS_UPGRADE = 10; // failed to read unknown data format – need to upgrade anytype
+                        APAROK_NEEDS_UPGRADE = 10; // failed to read unknown data format – need to upgrade aparok
 
                         // ...
                     }
@@ -2083,7 +2083,7 @@ message Rpc {
         message Create {
             message Request {
                 google.protobuf.Struct details = 1; // object details
-                repeated anytype.model.InternalFlag internalFlags = 2;
+                repeated aparok.model.InternalFlag internalFlags = 2;
                 string templateId = 3;
                 string spaceId = 4;
                 string objectTypeUniqueKey = 5;
@@ -2191,7 +2191,7 @@ message Rpc {
                 repeated string source = 1;
                 google.protobuf.Struct details = 2; // if omitted the name of page will be the same with object type
                 string templateId = 3; // optional template id for creating from template
-                repeated anytype.model.InternalFlag internalFlags = 4;
+                repeated aparok.model.InternalFlag internalFlags = 4;
                 string spaceId = 5;
                 bool withChat = 6;
             }
@@ -2219,7 +2219,7 @@ message Rpc {
         message CreateObjectType {
             message Request {
                 google.protobuf.Struct details = 1;
-                repeated anytype.model.InternalFlag internalFlags = 2;
+                repeated aparok.model.InternalFlag internalFlags = 2;
                 string spaceId = 3;
             }
 
@@ -2444,8 +2444,8 @@ message Rpc {
         message Search {
             message Request {
                 string spaceId = 8;
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 1;
-                repeated anytype.model.Block.Content.Dataview.Sort sorts = 2;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 1;
+                repeated aparok.model.Block.Content.Dataview.Sort sorts = 2;
                 string fullText = 3;
                 int32 offset = 4;
                 int32 limit = 5;
@@ -2477,8 +2477,8 @@ message Rpc {
         message SearchWithMeta {
             message Request {
                 string spaceId = 11;
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 1;
-                repeated anytype.model.Block.Content.Dataview.Sort sorts = 2;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 1;
+                repeated aparok.model.Block.Content.Dataview.Sort sorts = 2;
                 string fullText = 3;
                 int32 offset = 4;
                 int32 limit = 5;
@@ -2509,7 +2509,7 @@ message Rpc {
 
         message Graph {
             message Request {
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 1;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 1;
                 int32 limit = 2;
                 // additional filter by objectTypes
                 repeated string objectTypeFilter = 3; // DEPRECATED, GO-1926
@@ -2562,9 +2562,9 @@ message Rpc {
                 // if subId is already registered on middleware, the new query will replace previous subscription
                 string subId = 1;
                 // filters
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 2;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 2;
                 // sorts
-                repeated anytype.model.Block.Content.Dataview.Sort sorts = 3;
+                repeated aparok.model.Block.Content.Dataview.Sort sorts = 3;
                 // results limit
                 int64 limit = 5;
                 // initial offset; middleware will find afterId
@@ -2617,10 +2617,10 @@ message Rpc {
         // ObjectSearchWithMeta (not ObjectSearch's name-prefix mode).
         message CrossSpaceSearch {
             message Request {
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 1;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 1;
                 // empty sorts: fullText queries default to relevance order,
                 // browse queries (empty fullText) to lastModifiedDate desc
-                repeated anytype.model.Block.Content.Dataview.Sort sorts = 2;
+                repeated aparok.model.Block.Content.Dataview.Sort sorts = 2;
                 string fullText = 3;
                 // offset and limit apply to the merged cross-space result.
                 // Always set a limit: an unlimited request materializes every
@@ -2666,9 +2666,9 @@ message Rpc {
                 // if subId is already registered on middleware, the new query will replace previous subscription
                 string subId = 1;
                 // filters
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 2;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 2;
                 // sorts
-                repeated anytype.model.Block.Content.Dataview.Sort sorts = 3;
+                repeated aparok.model.Block.Content.Dataview.Sort sorts = 3;
                 // (required)  needed keys in details for return, for object fields mw will return (and subscribe) objects as dependent
                 repeated string keys = 7;
 
@@ -2730,7 +2730,7 @@ message Rpc {
                 string spaceId = 6;
                 string subId = 1;
                 string relationKey = 2;
-                repeated anytype.model.Block.Content.Dataview.Filter filters = 3;
+                repeated aparok.model.Block.Content.Dataview.Filter filters = 3;
                 repeated string source = 4;
                 string collectionId = 5;
             }
@@ -2738,7 +2738,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                repeated anytype.model.Block.Content.Dataview.Group groups = 2;
+                repeated aparok.model.Block.Content.Dataview.Group groups = 2;
 
                 string subId = 3;
 
@@ -2818,7 +2818,7 @@ message Rpc {
         message SetLayout {
             message Request {
                 string contextId = 1;
-                anytype.model.ObjectType.Layout layout = 3;
+                aparok.model.ObjectType.Layout layout = 3;
             }
 
             message Response {
@@ -2940,7 +2940,7 @@ message Rpc {
         message SetInternalFlags {
             message Request {
                 string contextId = 1;
-                repeated anytype.model.InternalFlag internalFlags = 7;
+                repeated aparok.model.InternalFlag internalFlags = 7;
 
             }
             message Response {
@@ -2963,7 +2963,7 @@ message Rpc {
         message SetDetails {
             message Request {
                 string contextId = 1;
-                repeated anytype.model.Detail details = 2;
+                repeated aparok.model.Detail details = 2;
             }
             message Response {
                 Error error = 1;
@@ -3043,7 +3043,7 @@ message Rpc {
                 ResponseEvent event = 2;
                 UndoRedoCounter counters = 3;
                 string blockId = 4;
-                anytype.model.Range range = 5;
+                aparok.model.Range range = 5;
 
                 message Error {
                     Code code = 1;
@@ -3070,7 +3070,7 @@ message Rpc {
                 ResponseEvent event = 2;
                 UndoRedoCounter counters = 3;
                 string blockId = 4;
-                anytype.model.Range range = 5;
+                aparok.model.Range range = 5;
 
                 message Error {
                     Code code = 1;
@@ -3305,7 +3305,7 @@ message Rpc {
 
             message Request {
                 repeated string objectIds = 1;
-                repeated anytype.model.Detail details = 2;
+                repeated aparok.model.Detail details = 2;
             }
 
             message Response {
@@ -3387,7 +3387,7 @@ message Rpc {
                 // ids of documents for export, when empty - will export all available docs
                 repeated string objectIds = 2;
                 // export format
-                anytype.model.Export.Format format = 3;
+                aparok.model.Export.Format format = 3;
                 // save as zip file
                 bool zip = 4;
                 // include all nested
@@ -3411,7 +3411,7 @@ message Rpc {
                 bool removeBlocks = 2;
             }
             message RelationsWhiteList {
-                anytype.model.ObjectType.Layout layout = 1;
+                aparok.model.ObjectType.Layout layout = 1;
                 repeated string allowedRelations = 2;
             }
             message Response {
@@ -3419,7 +3419,7 @@ message Rpc {
                 string path = 2;
                 int32 succeed = 4;
                 ResponseEvent event = 3;
-                anytype.model.ExportReport report = 5;
+                aparok.model.ExportReport report = 5;
 
                 message Error {
                     Code code = 1;
@@ -3442,14 +3442,14 @@ message Rpc {
                 // ids of documents for export, when empty - will export all available docs
                 string objectId = 2;
                 // export format
-                anytype.model.Export.Format format = 3;
+                aparok.model.Export.Format format = 3;
             }
 
             message Response {
                 Error error = 1;
                 string result = 2;
                 ResponseEvent event = 3;
-                anytype.model.ExportReport report = 4;
+                aparok.model.ExportReport report = 4;
 
                 message Error {
                     Code code = 1;
@@ -3480,7 +3480,7 @@ message Rpc {
                 }
                 repeated Snapshot snapshots = 8; // optional, for external developers usage
                 bool updateExistingObjects = 9;
-                anytype.model.Import.Type type = 10;
+                aparok.model.Import.Type type = 10;
                 Mode mode = 11;
                 bool noProgress = 12;
                 bool isMigration = 13;
@@ -3549,7 +3549,7 @@ message Rpc {
 
                 message Snapshot {
                     string id = 1;
-                    anytype.model.SmartBlockSnapshotBase snapshot = 2;
+                    aparok.model.SmartBlockSnapshotBase snapshot = 2;
                 };
             }
 
@@ -3652,7 +3652,7 @@ message Rpc {
             // Run pairs the statistic payload with the durable lifecycle
             // state and liveness.
             message Run {
-                anytype.Event.Import.Statistic status = 1;
+                aparok.Event.Import.Statistic status = 1;
                 // the manifest lifecycle state (running | fetched |
                 // materializing | suspended | compensating | completed |
                 // failed)
@@ -3909,7 +3909,7 @@ message Rpc {
             }
             message Response {
                 Error error = 1;
-                repeated anytype.model.Relation relations = 2;
+                repeated aparok.model.Relation relations = 2;
 
                 message Error {
                     Code code = 1;
@@ -3996,7 +3996,7 @@ message Rpc {
                     // required when key is empty
                     string name = 3;
                     // required when key is empty
-                    anytype.model.RelationFormat format = 4;
+                    aparok.model.RelationFormat format = 4;
                     Section section = 5;
                     // the isVisible the new column gets in every view
                     bool enableInViews = 6;
@@ -4384,7 +4384,7 @@ message Rpc {
             message Response {
                 Error error = 1;
                 repeated Event.Message historyEvents = 2;
-                anytype.model.ObjectView objectView = 3;
+                aparok.model.ObjectView objectView = 3;
 
                 message Error {
                     Code code = 1;
@@ -4499,12 +4499,12 @@ message Rpc {
                 string spaceId = 6;
                 string url = 1;
                 string localPath = 2;
-                anytype.model.Block.Content.File.Type type = 3;
+                aparok.model.Block.Content.File.Type type = 3;
                 bool disableEncryption = 4; // deprecated, has no affect, GO-1926
-                anytype.model.Block.Content.File.Style style = 5;
+                aparok.model.Block.Content.File.Style style = 5;
                 google.protobuf.Struct details = 7; // additional details for file object
-                anytype.model.ObjectOrigin origin = 8;
-                anytype.model.ImageKind imageKind = 9;
+                aparok.model.ObjectOrigin origin = 8;
+                aparok.model.ImageKind imageKind = 9;
                 bool preloadOnly = 10; // if true, only async preload the file without creating object
                 string preloadFileId = 11; // if set, reuse already preloaded file with this id. May block if async preload operation is not finished yet
                 string createdInContext = 12; // Object ID where the file was initially created
@@ -4574,11 +4574,11 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string dropTargetId = 2; // id of the simple block to insert considering position
-                anytype.model.Block.Position position = 3;  // position relatively to the dropTargetId simple block
-                anytype.model.Block.Content.File.Style style = 5;
+                aparok.model.Block.Position position = 3;  // position relatively to the dropTargetId simple block
+                aparok.model.Block.Content.File.Style style = 5;
                 repeated string localFilePaths = 4;
                 string spaceId = 6; // used when contextId is empty to identify target space
-                anytype.model.Block.Content.File.Type type = 7;
+                aparok.model.Block.Content.File.Type type = 7;
             }
             message Response {
                 Error error = 1;
@@ -4765,7 +4765,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                repeated anytype.model.ObjectInfo objects = 2;
+                repeated aparok.model.ObjectInfo objects = 2;
 
                 message Error {
                     Code code = 1;
@@ -4792,7 +4792,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                anytype.model.ObjectInfoWithLinks object = 2;
+                aparok.model.ObjectInfoWithLinks object = 2;
 
                 message Error {
                     Code code = 1;
@@ -4886,7 +4886,7 @@ message Rpc {
         message SetPlaceholders {
             message Request {
                 string templateId = 1;
-                repeated anytype.model.Placeholder placeholders = 2;
+                repeated aparok.model.Placeholder placeholders = 2;
             }
             message Response {
                 Error error = 1;
@@ -4910,7 +4910,7 @@ message Rpc {
             }
             message Response {
                 Error error = 1;
-                repeated anytype.model.Placeholder placeholders = 2;
+                repeated aparok.model.Placeholder placeholders = 2;
 
                 message Error {
                     Code code = 1;
@@ -4954,7 +4954,7 @@ message Rpc {
 
         message Response {
             Error error = 1;
-            anytype.model.LinkPreview linkPreview = 2;
+            aparok.model.LinkPreview linkPreview = 2;
 
             message Error {
                 Code code = 1;
@@ -5008,7 +5008,7 @@ message Rpc {
             message Request {
                 string pictureId = 1;
                 string spaceId = 2;
-                anytype.model.ImageKind imageKind = 3;
+                aparok.model.ImageKind imageKind = 3;
                 string createdInContext = 4; // Object ID where the file was initially created
                 string createdInContextRef = 5; // Block ID where the file was initially created
             }
@@ -5277,7 +5277,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                anytype.model.ManifestInfo info = 2;
+                aparok.model.ManifestInfo info = 2;
 
                 message Error {
                     Code code = 1;
@@ -5299,7 +5299,7 @@ message Rpc {
             message Response {
                 Error error = 1;
                 repeated Category categories = 2;
-                repeated anytype.model.ManifestInfo experiences = 3;
+                repeated aparok.model.ManifestInfo experiences = 3;
 
                 message Error {
                     Code code = 1;
@@ -5329,7 +5329,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string blockId = 2;
-                anytype.model.Block block = 3;
+                aparok.model.Block block = 3;
             }
 
             message Response {
@@ -5355,8 +5355,8 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string blockId = 2;
-                anytype.model.Range range = 3;
-                anytype.model.Block.Content.Text.Style style = 4;
+                aparok.model.Range range = 3;
+                aparok.model.Block.Content.Text.Style style = 4;
                 Mode mode = 5;
 
                 enum Mode {
@@ -5418,17 +5418,17 @@ message Rpc {
         message Copy {
             message Request {
                 string contextId = 1;
-                repeated anytype.model.Block blocks = 2;
-                anytype.model.Range selectedTextRange = 3;
+                repeated aparok.model.Block blocks = 2;
+                aparok.model.Range selectedTextRange = 3;
                 // optional. when set and the request contains multiple blocks, selectedTextRange is applied to the first block and selectedTextRangeLastBlock to the last block. {0,0} range means the whole block
-                anytype.model.Range selectedTextRangeLastBlock = 4;
+                aparok.model.Range selectedTextRangeLastBlock = 4;
             }
 
             message Response {
                 Error error = 1;
                 string textSlot = 2;
                 string htmlSlot = 3;
-                repeated anytype.model.Block anySlot = 4;
+                repeated aparok.model.Block anySlot = 4;
 
                 message Error {
                     Code code = 1;
@@ -5448,13 +5448,13 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string focusedBlockId = 2;
-                anytype.model.Range selectedTextRange = 3;
+                aparok.model.Range selectedTextRange = 3;
                 repeated string selectedBlockIds = 4;
                 bool isPartOfBlock = 5;
 
                 string textSlot = 6;
                 string htmlSlot = 7;
-                repeated anytype.model.Block anySlot = 8;
+                repeated aparok.model.Block anySlot = 8;
                 repeated File fileSlot = 9;
                 string url = 10;
 
@@ -5489,17 +5489,17 @@ message Rpc {
         message Cut {
             message Request {
                 string contextId = 1;
-                repeated anytype.model.Block blocks = 2;
-                anytype.model.Range selectedTextRange = 3;
+                repeated aparok.model.Block blocks = 2;
+                aparok.model.Range selectedTextRange = 3;
                 // optional. when set and the request contains multiple blocks, selectedTextRange is applied to the first block and selectedTextRangeLastBlock to the last block. {0,0} range means the whole block
-                anytype.model.Range selectedTextRangeLastBlock = 4;
+                aparok.model.Range selectedTextRangeLastBlock = 4;
             }
 
             message Response {
                 Error error = 1;
                 string textSlot = 2;
                 string htmlSlot = 3;
-                repeated anytype.model.Block anySlot = 4;
+                repeated aparok.model.Block anySlot = 4;
                 ResponseEvent event = 5;
 
                 message Error {
@@ -5587,8 +5587,8 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest block
-                anytype.model.Block block = 3;
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block block = 3;
+                aparok.model.Block.Position position = 4;
             }
 
             message Response {
@@ -5614,9 +5614,9 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest block
-                anytype.model.Block block = 3;
-                anytype.model.Block.Position position = 4;
-                anytype.model.Block.Content.Widget.Layout widgetLayout = 5;
+                aparok.model.Block block = 3;
+                aparok.model.Block.Position position = 4;
+                aparok.model.Block.Content.Widget.Layout widgetLayout = 5;
                 int32 objectLimit = 6;
                 string viewId = 7;
             }
@@ -5697,7 +5697,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2; // when empty - align will be applied as layoutAlign
-                anytype.model.Block.Align align = 3;
+                aparok.model.Block.Align align = 3;
             }
 
             message Response {
@@ -5722,7 +5722,7 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 repeated string blockIds = 2;
-                anytype.model.Block.VerticalAlign verticalAlign = 3;
+                aparok.model.Block.VerticalAlign verticalAlign = 3;
             }
 
             message Response {
@@ -5779,7 +5779,7 @@ message Rpc {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest block
                 repeated string blockIds = 3; // id of block for duplicate
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block.Position position = 4;
                 string targetContextId = 5;
             }
 
@@ -5809,16 +5809,16 @@ message Rpc {
                 oneof field {
                     Text text = 3;
                     string backgroundColor = 4;
-                    anytype.model.Block.Align align = 5;
+                    aparok.model.Block.Align align = 5;
                     google.protobuf.Struct fields = 6;
-                    anytype.model.Block.Content.Div.Style divStyle = 7;
+                    aparok.model.Block.Content.Div.Style divStyle = 7;
                     model.Block.Content.File.Style fileStyle = 8;
                 }
                 message Text {
                     oneof field {
-                        anytype.model.Block.Content.Text.Style style = 1;
+                        aparok.model.Block.Content.Text.Style style = 1;
                         string color = 2;
-                        anytype.model.Block.Content.Text.Mark mark = 3;
+                        aparok.model.Block.Content.Text.Mark mark = 3;
                     }
                 }
             }
@@ -5830,7 +5830,7 @@ message Rpc {
                 repeated string blockIds = 2;
                 string objectTypeUniqueKey = 3;
                 string templateId = 4;
-                anytype.model.Block block = 5;
+                aparok.model.Block block = 5;
             }
 
             message Response {
@@ -5858,7 +5858,7 @@ message Rpc {
                 repeated string blockIds = 2;
                 string targetContextId = 3;
                 string dropTargetId = 4; // id of the simple block to insert considering position
-                anytype.model.Block.Position position = 5; // position relatively to the dropTargetId simple block
+                aparok.model.Block.Position position = 5; // position relatively to the dropTargetId simple block
             }
 
             message Response {
@@ -5885,7 +5885,7 @@ message Rpc {
                 repeated string blockIds = 2;
                 google.protobuf.Struct details = 3; // new object details
                 string dropTargetId = 4; // id of the simple block to insert considering position
-                anytype.model.Block.Position position = 5; // position relatively to the dropTargetId simple block
+                aparok.model.Block.Position position = 5; // position relatively to the dropTargetId simple block
             }
 
             message Response {
@@ -5911,7 +5911,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2;
-                anytype.model.Block.Content.Text.Style style = 3;
+                aparok.model.Block.Content.Text.Style style = 3;
             }
             message Response {
                 Error error = 1;
@@ -5959,7 +5959,7 @@ message Rpc {
         message Export {
             message Request {
                 string contextId = 1;
-                repeated anytype.model.Block blocks = 2;
+                repeated aparok.model.Block blocks = 2;
             }
 
             message Response {
@@ -5985,7 +5985,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string blockId = 2;
-                anytype.model.Range range = 3;
+                aparok.model.Range range = 3;
             }
 
             message Response {
@@ -6011,7 +6011,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                repeated anytype.model.Block blocks = 2;
+                repeated aparok.model.Block blocks = 2;
 
                 message Error {
                     Code code = 1;
@@ -6086,8 +6086,8 @@ message Rpc {
                 string contextId = 1;
                 string blockId = 2;
                 string text = 3;
-                anytype.model.Block.Content.Text.Marks marks = 4;
-                anytype.model.Range selectedTextRange = 5;
+                aparok.model.Block.Content.Text.Marks marks = 4;
+                aparok.model.Range selectedTextRange = 5;
             }
 
             message Response {
@@ -6141,7 +6141,7 @@ message Rpc {
                 message Request {
                     string contextId = 1;
                     string blockId = 2;
-                    anytype.model.Range range = 3;
+                    aparok.model.Range range = 3;
                 }
 
                 message Response {
@@ -6167,7 +6167,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string blockId = 2;
-                anytype.model.Block.Content.Text.Style style = 3;
+                aparok.model.Block.Content.Text.Style style = 3;
             }
 
             message Response {
@@ -6243,7 +6243,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2;
-                anytype.model.Block.Content.Text.Style style = 3;
+                aparok.model.Block.Content.Text.Style style = 3;
             }
 
             message Response {
@@ -6293,7 +6293,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2;
-                anytype.model.Block.Content.Text.Mark mark = 3;
+                aparok.model.Block.Content.Text.Mark mark = 3;
             }
 
             message Response {
@@ -6368,7 +6368,7 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest block
-                anytype.model.Block.Position position = 3;
+                aparok.model.Block.Position position = 3;
                 uint32 rows = 4;
                 uint32 columns = 5;
                 bool withHeaderRow = 6;
@@ -6396,7 +6396,7 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest row
-                anytype.model.Block.Position position = 3;
+                aparok.model.Block.Position position = 3;
             }
 
             message Response {
@@ -6516,7 +6516,7 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string targetId = 2; // id of the closest column
-                anytype.model.Block.Position position = 3;
+                aparok.model.Block.Position position = 3;
             }
 
             message Response {
@@ -6588,7 +6588,7 @@ message Rpc {
                 string contextId = 1;
                 string targetId = 2;
                 string dropTargetId = 3;
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block.Position position = 4;
             }
 
             message Response {
@@ -6614,7 +6614,7 @@ message Rpc {
                 string contextId = 1; // id of the context object
                 string targetId = 2;
                 string blockId = 3; // block to duplicate
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block.Position position = 4;
             }
 
             message Response {
@@ -6640,7 +6640,7 @@ message Rpc {
                 string contextId = 1; // id of the context object
                 string targetId = 2;
                 string blockId = 3; // block to duplicate
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block.Position position = 4;
             }
 
             message Response {
@@ -6692,7 +6692,7 @@ message Rpc {
             message Request {
                 string contextId = 1; // id of the context object
                 string columnId = 2;
-                anytype.model.Block.Content.Dataview.Sort.Type type = 3;
+                aparok.model.Block.Content.Dataview.Sort.Type type = 3;
             }
 
             message Response {
@@ -6768,11 +6768,11 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string targetId = 2;
-                anytype.model.Block.Position position = 3;
+                aparok.model.Block.Position position = 3;
                 string url = 4;
                 string localPath = 5;
-                anytype.model.Block.Content.File.Type fileType = 6;
-                anytype.model.ImageKind imageKind = 7;
+                aparok.model.Block.Content.File.Type fileType = 6;
+                aparok.model.ImageKind imageKind = 7;
             }
 
             message Response {
@@ -6924,14 +6924,14 @@ message Rpc {
                 string contextId = 1; // id of the context object
                 google.protobuf.Struct details = 3; // new object details
                 string templateId = 5; // optional template id for creating from template
-                repeated anytype.model.InternalFlag internalFlags = 7;
+                repeated aparok.model.InternalFlag internalFlags = 7;
                 string spaceId = 8;
                 string objectTypeUniqueKey = 9;
-                anytype.model.Block block = 10;
+                aparok.model.Block block = 10;
 
                 // link block params
                 string targetId = 2; // id of the closest simple block
-                anytype.model.Block.Position position = 4;
+                aparok.model.Block.Position position = 4;
                 google.protobuf.Struct fields = 6; // deprecated link block fields
 
             }
@@ -6960,9 +6960,9 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2;
-                anytype.model.Block.Content.Link.IconSize iconSize = 4;
-                anytype.model.Block.Content.Link.CardStyle cardStyle = 5;
-                anytype.model.Block.Content.Link.Description description = 6;
+                aparok.model.Block.Content.Link.IconSize iconSize = 4;
+                aparok.model.Block.Content.Link.CardStyle cardStyle = 5;
+                aparok.model.Block.Content.Link.Description description = 6;
                 repeated string relations = 7;
             }
 
@@ -7064,7 +7064,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string targetId = 2;
-                anytype.model.Block.Position position = 3;
+                aparok.model.Block.Position position = 3;
                 string url = 4;
                 string templateId = 5;
             }
@@ -7093,7 +7093,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 repeated string blockIds = 2;
-                anytype.model.Block.Content.Div.Style style = 3;
+                aparok.model.Block.Content.Div.Style style = 3;
             }
 
             message Response {
@@ -7121,7 +7121,7 @@ message Rpc {
                 message Request {
                     string contextId = 1;
                     string blockId = 2; // id of dataview block to insert the new block
-                    anytype.model.Block.Content.Dataview.View view = 4;
+                    aparok.model.Block.Content.Dataview.View view = 4;
                     repeated string source = 5;
                 }
 
@@ -7148,7 +7148,7 @@ message Rpc {
                     string contextId = 1;
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
-                    anytype.model.Block.Content.Dataview.View view = 4;
+                    aparok.model.Block.Content.Dataview.View view = 4;
                 }
 
                 message Response {
@@ -7341,7 +7341,7 @@ message Rpc {
                 message Request {
                     string contextId = 1;
                     string blockId = 2;
-                    anytype.model.Block.Content.Dataview.GroupOrder groupOrder = 3;
+                    aparok.model.Block.Content.Dataview.GroupOrder groupOrder = 3;
                 }
 
                 message Response {
@@ -7366,7 +7366,7 @@ message Rpc {
                 message Request {
                     string contextId = 1;
                     string blockId = 2;
-                    repeated anytype.model.Block.Content.Dataview.ObjectOrder objectOrders = 3;
+                    repeated aparok.model.Block.Content.Dataview.ObjectOrder objectOrders = 3;
                 }
 
                 message Response {
@@ -7425,7 +7425,7 @@ message Rpc {
                 Error error = 1;
                 string blockId = 2;
                 string targetObjectId = 3;
-                repeated anytype.model.Block.Content.Dataview.View view = 4;
+                repeated aparok.model.Block.Content.Dataview.View view = 4;
                 ResponseEvent event = 5;
 
                 message Error {
@@ -7448,7 +7448,7 @@ message Rpc {
                     string contextId = 1;
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
-                    anytype.model.Block.Content.Dataview.Filter filter = 4;
+                    aparok.model.Block.Content.Dataview.Filter filter = 4;
                 }
 
                 message Response {
@@ -7500,7 +7500,7 @@ message Rpc {
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
                     string id = 4;
-                    anytype.model.Block.Content.Dataview.Filter filter = 5;
+                    aparok.model.Block.Content.Dataview.Filter filter = 5;
                 }
 
                 message Response {
@@ -7552,7 +7552,7 @@ message Rpc {
                     string contextId = 1;
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
-                    anytype.model.Block.Content.Dataview.Sort sort = 4;
+                    aparok.model.Block.Content.Dataview.Sort sort = 4;
                 }
 
                 message Response {
@@ -7603,7 +7603,7 @@ message Rpc {
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
                     string id = 4;
-                    anytype.model.Block.Content.Dataview.Sort sort = 5;
+                    aparok.model.Block.Content.Dataview.Sort sort = 5;
                 }
 
                 message Response {
@@ -7654,7 +7654,7 @@ message Rpc {
                     string contextId = 1;
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
-                    anytype.model.Block.Content.Dataview.Relation relation = 4;
+                    aparok.model.Block.Content.Dataview.Relation relation = 4;
                 }
 
                 message Response {
@@ -7705,7 +7705,7 @@ message Rpc {
                     string blockId = 2; // id of dataview block to update
                     string viewId = 3; // id of view to update
                     string relationKey = 4;
-                    anytype.model.Block.Content.Dataview.Relation relation = 5;
+                    aparok.model.Block.Content.Dataview.Relation relation = 5;
                 }
 
                 message Response {
@@ -7781,7 +7781,7 @@ message Rpc {
             message Request {
                 string contextId = 1;
                 string blockId = 2;
-                anytype.model.Block.Content.Widget.Layout layout = 3;
+                aparok.model.Block.Content.Widget.Layout layout = 3;
             }
 
             message Response {
@@ -8389,7 +8389,7 @@ message Rpc {
             }
             message Response {
                 Error error = 1;
-                repeated anytype.model.Notification notifications = 2;
+                repeated aparok.model.Notification notifications = 2;
 
                 message Error {
                     Code code = 1;
@@ -8408,7 +8408,7 @@ message Rpc {
         message Reply {
             message Request {
                 repeated string ids = 1;
-                anytype.model.Notification.ActionType actionType = 2;
+                aparok.model.Notification.ActionType actionType = 2;
             }
             message Response {
                 Error error = 1;
@@ -8431,7 +8431,7 @@ message Rpc {
             message Request {}
             message Response {
                 Error error = 1;
-                anytype.model.Notification notification = 2;
+                aparok.model.Notification notification = 2;
 
                 message Error {
                     Code code = 1;
@@ -8457,7 +8457,7 @@ message Rpc {
         /**
         * Get the current status of the membership
         * including the tier, status, dates, etc
-        * WARNING: this can be cached by Anytype heart
+        * WARNING: this can be cached by Aparok heart
         */
         message GetStatus {
             message Request {
@@ -8469,7 +8469,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                anytype.model.Membership data = 2;
+                aparok.model.Membership data = 2;
 
                 message Error {
                     Code code = 1;
@@ -8502,7 +8502,7 @@ message Rpc {
 
                 string nsName = 2;
 
-                anytype.model.NameserviceNameType nsNameType = 3;
+                aparok.model.NameserviceNameType nsNameType = 3;
             }
 
             message Response {
@@ -8547,17 +8547,17 @@ message Rpc {
             message Request {
                 uint32 requestedTier = 1;
 
-                anytype.model.Membership.PaymentMethod paymentMethod = 2;
+                aparok.model.Membership.PaymentMethod paymentMethod = 2;
 
                 // if empty - then no name requested
                 // if non-empty - PP node will register that name on behalf of the user
                 string nsName = 3;
 
-                anytype.model.NameserviceNameType nsNameType = 4;
+                aparok.model.NameserviceNameType nsNameType = 4;
 
                 // for some tiers and payment methods (like crypto) we need an e-mail
                 // please get if either from:
-                // 1. Membership.GetStatus() -> anytype.model.Membership.userEmail field
+                // 1. Membership.GetStatus() -> aparok.model.Membership.userEmail field
                 // 2. Ask user from the UI
                 string userEmail = 5;
             }
@@ -8637,7 +8637,7 @@ message Rpc {
                 // if non-empty - PP node will register that name on behalf of the user
                 string nsName = 1;
 
-                anytype.model.NameserviceNameType nsNameType = 2;
+                aparok.model.NameserviceNameType nsNameType = 2;
             }
 
             message Response {
@@ -8678,7 +8678,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                anytype.model.Membership.EmailVerificationStatus status = 2;
+                aparok.model.Membership.EmailVerificationStatus status = 2;
 
                 message Error {
                     Code code = 1;
@@ -8793,7 +8793,7 @@ message Rpc {
 
             message Response {
                 Error error = 1;
-                repeated anytype.model.MembershipTierData tiers = 2;
+                repeated aparok.model.MembershipTierData tiers = 2;
 
                 message Error {
                     Code code = 1;
@@ -8878,7 +8878,7 @@ message Rpc {
 
                 string nsName = 2;
 
-                anytype.model.NameserviceNameType nsNameType = 3;
+                aparok.model.NameserviceNameType nsNameType = 3;
             }
 
             message Response {
@@ -8950,7 +8950,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                repeated anytype.model.MembershipV2.Product products = 2;
+                repeated aparok.model.MembershipV2.Product products = 2;
 
                 message Error {
                     Code code = 1;
@@ -8985,7 +8985,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                anytype.model.MembershipV2.Data data = 2;
+                aparok.model.MembershipV2.Data data = 2;
 
                 message Error {
                     Code code = 1;
@@ -9019,7 +9019,7 @@ message Rpc {
             message Request {
                 string nsName = 1;
 
-                anytype.model.NameserviceNameType nsNameType = 2;
+                aparok.model.NameserviceNameType nsNameType = 2;
             }
 
             message Response {
@@ -9063,7 +9063,7 @@ message Rpc {
                 // PP node will register that name on behalf of the user
                 string nsName = 1;
 
-                anytype.model.NameserviceNameType nsNameType = 2;
+                aparok.model.NameserviceNameType nsNameType = 2;
             }
 
             message Response {
@@ -9104,7 +9104,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                anytype.model.MembershipV2.Cart cart = 2;
+                aparok.model.MembershipV2.Cart cart = 2;
 
                 message Error {
                     Code code = 1;
@@ -9135,7 +9135,7 @@ message Rpc {
             message Response {
                 Error error = 1;
 
-                anytype.model.MembershipV2.Cart cart = 2;
+                aparok.model.MembershipV2.Cart cart = 2;
 
                 message Error {
                     Code code = 1;
@@ -9158,7 +9158,7 @@ message Rpc {
         message SubscribeToUpdates {
             message Request {
                 string email = 1;
-                anytype.model.MembershipV2.Platform platform = 2;
+                aparok.model.MembershipV2.Platform platform = 2;
                 // if false - unsubscribe
                 bool subscribe = 3;
                 // additional data
@@ -9189,7 +9189,7 @@ message Rpc {
             message Request {
                 string nsName = 1;
 
-                anytype.model.NameserviceNameType nsNameType = 2;
+                aparok.model.NameserviceNameType nsNameType = 2;
             }
 
             message Response {
@@ -9242,7 +9242,7 @@ message Rpc {
                 // not including suffix
                 string nsName = 3;
 
-                anytype.model.NameserviceNameType nsNameType = 4;
+                aparok.model.NameserviceNameType nsNameType = 4;
 
                 message Error {
                     Code code = 1;
@@ -9271,7 +9271,7 @@ message Rpc {
                 // not including suffix
                 string nsName = 3;
 
-                anytype.model.NameserviceNameType nsNameType = 4;
+                aparok.model.NameserviceNameType nsNameType = 4;
 
                 message Error {
                     Code code = 1;
@@ -9301,7 +9301,7 @@ message Rpc {
                     // only 1 name can be set as "current": ETH address <-> name
                     string nsNameAttached = 2;
 
-                    anytype.model.NameserviceNameType nsNameType = 3;
+                    aparok.model.NameserviceNameType nsNameType = 3;
 
                     // Number of names that the user can reserve
                     uint64 namesCountLeft = 4;
@@ -9378,7 +9378,7 @@ message Rpc {
             message Request {}
             message Response {
                 Error error = 1;
-                repeated anytype.model.DeviceInfo devices = 2;
+                repeated aparok.model.DeviceInfo devices = 2;
 
                 message Error {
                     Code code = 1;
@@ -9395,7 +9395,7 @@ message Rpc {
         message NetworkState {
             message Set {
                 message Request {
-                    anytype.model.DeviceNetworkType deviceNetworkType = 1;
+                    aparok.model.DeviceNetworkType deviceNetworkType = 1;
                     // opaque identity of the current network path as reported by the OS
                     // (iOS: NWPath interfaces/gateway digest; Android: Network#getNetworkHandle()).
                     // When it changes while the type stays the same (Wi-Fi to Wi-Fi switch,
@@ -9832,7 +9832,7 @@ message Rpc {
                 // empty chatId means all chats in spaceId; results carry chatId/spaceId per message
                 string chatId = 2;
                 // Note: ORDER_ID sort is only meaningful within a single chat
-                repeated anytype.model.Search.Message.Sort sorts = 3;
+                repeated aparok.model.Search.Message.Sort sorts = 3;
                 // empty fullText browses the latest messages in scope (default sort CREATED_AT desc);
                 // non-empty fullText is a relevance search (default sort SCORE desc)
                 string fullText = 4;

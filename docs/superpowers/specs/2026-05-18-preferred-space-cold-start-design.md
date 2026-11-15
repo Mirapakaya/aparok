@@ -5,7 +5,7 @@ Status: Approved (pending spec review)
 
 ## Problem
 
-On cold start, anytype-heart eagerly loads every space, causing heavy disk
+On cold start, aparok-heart eagerly loads every space, causing heavy disk
 read activity. When the app is cold-opened into a specific route
 (deeplink/push into a space/object/chat) — or simply into the last-opened
 space — only that one space is needed first. Loading all spaces up front
