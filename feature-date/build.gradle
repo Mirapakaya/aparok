@@ -15,7 +15,7 @@ android {
         compose true
     }
 
-    namespace 'com.anytypeio.anytype.feature_date'
+    namespace 'com.aparokio.aparok.feature_date'
 }
 
 dependencies {

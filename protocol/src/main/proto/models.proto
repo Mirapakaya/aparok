@@ -1,5 +1,5 @@
 syntax = "proto3";
-package anytype.model;
+package aparok.model;
 option go_package = "pkg/lib/pb/model";
 
 import "google/protobuf/struct.proto";
@@ -36,7 +36,7 @@ enum SmartBlockType {
     BundledRelation = 0x200; // DEPRECATED
     SubObject = 0x201;
     BundledObjectType = 0x202;    // DEPRECATED
-    AnytypeProfile = 0x203;
+    AparokProfile = 0x203;
     Date = 0x204;
     Workspace = 0x206;
     STRelation = 0x209;
@@ -379,7 +379,7 @@ message Block {
             repeated model.Relation relations = 4;
             repeated GroupOrder groupOrders = 12;
             repeated ObjectOrder objectOrders = 13;
-            repeated anytype.model.RelationLink relationLinks = 5;
+            repeated aparok.model.RelationLink relationLinks = 5;
             string TargetObjectId = 6; // empty for original set/collection objects and for detached inline sets
             bool isCollection = 14;
 
@@ -722,7 +722,7 @@ message Account {
         string localStoragePath = 103; // path to local storage
         string timeZone = 104; // time zone from config
         string analyticsId = 105;
-        string networkId = 106; // network id to which anytype is connected
+        string networkId = 106; // network id to which aparok is connected
         string ethereumAddress = 107; // we have Any PK AND Ethereum PK derived from one seed phrase
         string metaDataKey = 108; // symmetric key for encrypting profile metadata
     }
@@ -951,7 +951,7 @@ message Relation {
     enum DataSource {
         details = 0; // default, stored inside the object's details
         derived = 1; // stored locally, e.g. in badger or generated on the fly
-        account = 2; // stored in the account DB. means existing only for specific anytype account
+        account = 2; // stored in the account DB. means existing only for specific aparok account
         local = 3; // stored locally
     }
 }
@@ -1440,7 +1440,7 @@ message Membership {
     PaymentMethod paymentMethod = 6;
     // can be empty if user did not ask for any name
     string nsName = 7;
-    anytype.model.NameserviceNameType nsNameType = 8;
+    aparok.model.NameserviceNameType nsNameType = 8;
     // if the email was verified by the user or set during the checkout - it will be here
     string userEmail = 9;
     bool subscribeToNewsletter = 10;

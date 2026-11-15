@@ -8,7 +8,7 @@ decrypt() {
 }
 
 if [[ ! -z "$ENCRYPT_KEY" ]]; then
-  decrypt ${ENCRYPT_KEY} scripts/distribution/anytype-debug-service-account-key.gpg scripts/distribution/anytype-debug-service-account-key.json
+  decrypt ${ENCRYPT_KEY} scripts/distribution/aparok-debug-service-account-key.gpg scripts/distribution/aparok-debug-service-account-key.json
 else
   echo "ENCRYPT_KEY is empty"
 fi
