@@ -27,7 +27,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/mention_suggester_new_page"
-        tools:text="anytype.io" />
+        tools:text="aparok.io" />
 
     <View
         android:id="@+id/view"

@@ -24,15 +24,15 @@
 
 | File | Role |
 | --- | --- |
-| `presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt` | ViewModel + all state models (bottom of file). Both tasks modify it. |
-| `core-ui/src/main/java/com/anytypeio/anytype/core_ui/relations/TagOrStatusCompose.kt` | The picker screen. Task 1 modifies it. |
+| `presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt` | ViewModel + all state models (bottom of file). Both tasks modify it. |
+| `core-ui/src/main/java/com/aparokio/aparok/core_ui/relations/TagOrStatusCompose.kt` | The picker screen. Task 1 modifies it. |
 | `localization/src/main/res/values/strings.xml` | Task 1 adds two strings. |
-| `presentation/src/test/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt` | All new tests. |
+| `presentation/src/test/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt` | All new tests. |
 
 Test command used throughout:
 
 ```bash
-./gradlew :presentation:testDebugUnitTest --tests "com.anytypeio.anytype.presentation.relations.value.tagstatus.TagOrStatusValueViewModelTest"
+./gradlew :presentation:testDebugUnitTest --tests "com.aparokio.aparok.presentation.relations.value.tagstatus.TagOrStatusValueViewModelTest"
 ```
 
 Compile check for the UI module:
@@ -46,10 +46,10 @@ Compile check for the UI module:
 ### Task 1: Section composition — model, ViewModel, Compose rendering
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`
-- Modify: `core-ui/src/main/java/com/anytypeio/anytype/core_ui/relations/TagOrStatusCompose.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`
+- Modify: `core-ui/src/main/java/com/aparokio/aparok/core_ui/relations/TagOrStatusCompose.kt`
 - Modify: `localization/src/main/res/values/strings.xml`
-- Test: `presentation/src/test/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt`
+- Test: `presentation/src/test/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt`
 
 **Interfaces:**
 - Consumes: existing `RelationsListItem`, `TagStatusViewState.Content`, `initViewState`, `filterOptions`.
@@ -308,7 +308,7 @@ In `TagOrStatusCompose.kt`:
 4a. Add imports:
 
 ```kotlin
-import com.anytypeio.anytype.core_ui.foundation.Section
+import com.aparokio.aparok.core_ui.foundation.Section
 ```
 
 4b. Add a private key helper at file scope (below `getTitle`, line 417):
@@ -466,10 +466,10 @@ Expected: all tests PASS (the five new ones and the ten existing ones), `:core-u
 - [ ] **Step 6: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt \
-        core-ui/src/main/java/com/anytypeio/anytype/core_ui/relations/TagOrStatusCompose.kt \
+git add presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt \
+        core-ui/src/main/java/com/aparokio/aparok/core_ui/relations/TagOrStatusCompose.kt \
         localization/src/main/res/values/strings.xml \
-        presentation/src/test/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt
+        presentation/src/test/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt
 git commit -m "DROID-4571 Properties | Fix | Show Selected and All values sections in the tag picker
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
@@ -480,8 +480,8 @@ Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
 ### Task 2: Sectioned drag semantics in OnMove
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`
-- Test: `presentation/src/test/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`
+- Test: `presentation/src/test/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt`
 
 **Interfaces:**
 - Consumes from Task 1: `RelationsListItem.Section`, `Content.items: List<RelationsListItem>`, sectioned list layout, `proceedWithOptimisticUpdate(newIds, persistedValue, analyticsEvent, dismissOnSuccess)` (unchanged, line 443), `activateOptionEventLock()` (line 555), `selectedIds` (line 117).
@@ -502,9 +502,9 @@ Add to the test class fields (near line 84):
 Add imports:
 
 ```kotlin
-import com.anytypeio.anytype.core_models.primitives.RelationKey
-import com.anytypeio.anytype.domain.base.Resultat
-import com.anytypeio.anytype.domain.relations.SetRelationOptionOrder
+import com.aparokio.aparok.core_models.primitives.RelationKey
+import com.aparokio.aparok.domain.base.Resultat
+import com.aparokio.aparok.domain.relations.SetRelationOptionOrder
 import org.mockito.kotlin.verifyNoInteractions
 ```
 
@@ -781,8 +781,8 @@ Expected: all tests PASS (six new, five from Task 1, ten pre-existing).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt \
-        presentation/src/test/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt \
+        presentation/src/test/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModelTest.kt
 git commit -m "DROID-4571 Properties | Fix | Route a drag to the value order or the option order by section
 
 Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
