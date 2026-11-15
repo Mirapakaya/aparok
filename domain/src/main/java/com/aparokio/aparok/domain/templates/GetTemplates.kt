@@ -1,0 +1,107 @@
+package com.aparokio.aparok.domain.templates
+
+import com.aparokio.aparok.core_models.Block
+import com.aparokio.aparok.core_models.DVFilter
+import com.aparokio.aparok.core_models.DVFilterCondition
+import com.aparokio.aparok.core_models.DVSort
+import com.aparokio.aparok.core_models.ObjectType
+import com.aparokio.aparok.core_models.ObjectTypeIds
+import com.aparokio.aparok.core_models.ObjectWrapper
+import com.aparokio.aparok.core_models.RelationFormat
+import com.aparokio.aparok.core_models.Relations
+import com.aparokio.aparok.core_models.primitives.SpaceId
+import com.aparokio.aparok.core_models.primitives.TypeId
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.base.ResultInteractor
+import com.aparokio.aparok.domain.block.repo.BlockRepository
+import com.aparokio.aparok.domain.workspace.SpaceManager
+import kotlinx.coroutines.withContext
+
+/**
+ * Use-case for getting templates for specific [ObjectType]
+ */
+class GetTemplates(
+    private val repo: BlockRepository,
+    private val spaceManager: SpaceManager,
+    private val dispatchers: AppCoroutineDispatchers
+) : ResultInteractor<GetTemplates.Params, List<ObjectWrapper.Basic>>(dispatchers.io) {
+
+    override suspend fun doWork(params: Params): List<ObjectWrapper.Basic> {
+        return withContext(dispatchers.io) {
+            try {
+                repo.searchObjects(
+                    // TODO provide space id to params
+                    space = SpaceId(spaceManager.get()),
+                    filters = listOf(
+                        DVFilter(
+                            relation = Relations.IS_ARCHIVED,
+                            condition = DVFilterCondition.NOT_EQUAL,
+                            value = true
+                        ),
+                        DVFilter(
+                            relation = Relations.IS_DELETED,
+                            condition = DVFilterCondition.NOT_EQUAL,
+                            value = true
+                        ),
+                        DVFilter(
+                            relation = Relations.IS_HIDDEN,
+                            condition = DVFilterCondition.NOT_EQUAL,
+                            value = true
+                        ),
+                        DVFilter(
+                            relation = Relations.IS_HIDDEN_DISCOVERY,
+                            condition = DVFilterCondition.NOT_EQUAL,
+                            value = true
+                        ),
+                        DVFilter(
+                            relation = Relations.TARGET_OBJECT_TYPE,
+                            condition = DVFilterCondition.EQUAL,
+                            value = params.type.id
+                        ),
+                        DVFilter(
+                            relation = Relations.TYPE_UNIQUE_KEY,
+                            condition = DVFilterCondition.EQUAL,
+                            value = ObjectTypeIds.TEMPLATE
+                        ),
+                        DVFilter(
+                            relation = Relations.ID,
+                            condition = DVFilterCondition.NOT_EMPTY
+                        )
+                    ),
+                    keys = listOf(
+                        Relations.ID,
+                        Relations.SPACE_ID,
+                        Relations.NAME,
+                        Relations.PLURAL_NAME,
+                        Relations.LAYOUT,
+                        Relations.ICON_EMOJI,
+                        Relations.ICON_NAME,
+                        Relations.ICON_IMAGE,
+                        Relations.ICON_OPTION,
+                        Relations.COVER_ID,
+                        Relations.COVER_TYPE
+                    ),
+                    sorts = listOf(
+                        DVSort(
+                            relationKey = Relations.CREATED_DATE,
+                            type = Block.Content.DataView.Sort.Type.DESC,
+                            relationFormat = RelationFormat.DATE
+                        )
+                    ),
+                    fulltext = "",
+                    offset = 0,
+                    limit = 100
+                ).map { obj ->
+                    ObjectWrapper.Basic(obj)
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    }
+
+    /**
+     * @property [type] id of the object type, whose templates we are interested in.
+     */
+    data class Params(val type: TypeId)
+}

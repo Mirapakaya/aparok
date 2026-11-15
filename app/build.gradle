@@ -47,9 +47,9 @@ licensee {
         because("PhotoView is Apache-2.0 licensed (verified in repository); JitPack metadata may be missing")
     }
 
-    // Internal Anytype middleware library
+    // Internal Aparok middleware library
     allowDependency("io.anyproto", "anytype-heart-android", libs.versions.middlewareVersion.get()) {
-        because("Internal Anytype library")
+        because("Internal Aparok library")
     }
 }
 
@@ -154,15 +154,15 @@ android {
             //signingConfig signingConfigs.debug
             firebaseAppDistribution {
                 artifactType = "AAB"
-                groups = "anytype-q&a, android-team, product-review, nightly-ops"
-                serviceCredentialsFile = "$rootDir/scripts/distribution/anytype-debug-service-account-key.json"
+                groups = "aparok-q&a, android-team, product-review, nightly-ops"
+                serviceCredentialsFile = "$rootDir/scripts/distribution/aparok-debug-service-account-key.json"
             }
         }
 
         applicationVariants.configureEach { variant ->
             if (variant.buildType.name == 'release') {
                 variant.outputs.configureEach { output ->
-                    def appName = 'anytype'
+                    def appName = 'aparok'
                     def versionName = variant.versionName
                     def originalOutputFileName = outputFileName
                     outputFileName = originalOutputFileName
@@ -192,7 +192,7 @@ android {
     }
 
     ndkVersion "28.1.13356709"
-    namespace 'com.anytypeio.anytype'
+    namespace 'com.aparokio.aparok'
 }
 
 dependencies {

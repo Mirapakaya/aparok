@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** On cold start, tell anytype-heart which single space to load eagerly (`AccountSelect.preferredSpaceId`) and, once the route's destination screen is up, signal heart to load the rest (`AccountPreloadRemainingSpaces`), so heart stops bloating disk I/O loading every space up front.
+**Goal:** On cold start, tell aparok-heart which single space to load eagerly (`AccountSelect.preferredSpaceId`) and, once the route's destination screen is up, signal heart to load the rest (`AccountPreloadRemainingSpaces`), so heart stops bloating disk I/O loading every space up front.
 
 **Architecture:** A new app-singleton `PreferredSpaceIdHolder` is set synchronously and early by whichever cold-start entry knows the route (deeplink via `MainViewModel.handleNewDeepLink`, chat push via `SplashViewModel.onIntentTriggeredByChatPush`). `LaunchAccount` consumes it (falling back to the last-opened space) and passes it through `Command.AccountSelect` into `Rpc.Account.Select.Request`. A new app-singleton `RemainingSpacesPreloader` fires the `AccountPreloadRemainingSpaces` RPC exactly once, 2s after the destination screen is reached, driven from `MainViewModel`.
 
-**Tech Stack:** Kotlin, Clean Architecture (core-models → domain → data → middleware → presentation → app), Dagger 2, Wire-generated protobuf (`anytype.Rpc`), Coroutines, JUnit4 + Mockito-kotlin + kotlinx-coroutines-test.
+**Tech Stack:** Kotlin, Clean Architecture (core-models → domain → data → middleware → presentation → app), Dagger 2, Wire-generated protobuf (`aparok.Rpc`), Coroutines, JUnit4 + Mockito-kotlin + kotlinx-coroutines-test.
 
 ---
 
@@ -55,8 +55,8 @@ The generated JNI binding object `service.Service` is part of `anytype-heart-and
 ## Task 1: Add `preferredSpaceId` to `Command.AccountSelect` and map it in Middleware
 
 **Files:**
-- Modify: `core-models/src/main/java/com/anytypeio/anytype/core_models/Command.kt:23-29`
-- Modify: `middleware/src/main/java/com/anytypeio/anytype/middleware/interactor/Middleware.kt:123-131`
+- Modify: `core-models/src/main/java/com/aparokio/aparok/core_models/Command.kt:23-29`
+- Modify: `middleware/src/main/java/com/aparokio/aparok/middleware/interactor/Middleware.kt:123-131`
 
 - [ ] **Step 1: Add the field to `Command.AccountSelect`**
 
@@ -97,8 +97,8 @@ Expected: `BUILD SUCCESSFUL`
 - [ ] **Step 4: Commit**
 
 ```bash
-git add core-models/src/main/java/com/anytypeio/anytype/core_models/Command.kt \
-        middleware/src/main/java/com/anytypeio/anytype/middleware/interactor/Middleware.kt
+git add core-models/src/main/java/com/aparokio/aparok/core_models/Command.kt \
+        middleware/src/main/java/com/aparokio/aparok/middleware/interactor/Middleware.kt
 git commit --no-verify -m "GO-7292 Pass preferredSpaceId through AccountSelect command"
 ```
 
@@ -107,18 +107,18 @@ git commit --no-verify -m "GO-7292 Pass preferredSpaceId through AccountSelect c
 ## Task 2: `PreferredSpaceIdHolder` app-singleton
 
 **Files:**
-- Create: `domain/src/main/java/com/anytypeio/anytype/domain/launch/PreferredSpaceIdHolder.kt`
-- Create: `domain/src/test/java/com/anytypeio/anytype/domain/launch/PreferredSpaceIdHolderTest.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/main/ConfigModule.kt` (near the existing `awaitAccountStartedManager` provider, lines ~73-76)
+- Create: `domain/src/main/java/com/aparokio/aparok/domain/launch/PreferredSpaceIdHolder.kt`
+- Create: `domain/src/test/java/com/aparokio/aparok/domain/launch/PreferredSpaceIdHolderTest.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/main/ConfigModule.kt` (near the existing `awaitAccountStartedManager` provider, lines ~73-76)
 
 - [ ] **Step 1: Write the failing test**
 
 Create `PreferredSpaceIdHolderTest.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.launch
+package com.aparokio.aparok.domain.launch
 
-import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder
+import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -158,19 +158,19 @@ class PreferredSpaceIdHolderTest {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolderTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.launch.PreferredSpaceIdHolderTest"`
 Expected: FAIL — unresolved reference `PreferredSpaceIdHolder`.
 
 - [ ] **Step 3: Implement `PreferredSpaceIdHolder`**
 
-Create `domain/src/main/java/com/anytypeio/anytype/domain/launch/PreferredSpaceIdHolder.kt`:
+Create `domain/src/main/java/com/aparokio/aparok/domain/launch/PreferredSpaceIdHolder.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.launch
+package com.aparokio.aparok.domain.launch
 
 /**
  * Holds the space id the user is cold-starting into (deeplink / chat push),
- * so [com.anytypeio.anytype.domain.auth.interactor.LaunchAccount] can pass it
+ * so [com.aparokio.aparok.domain.auth.interactor.LaunchAccount] can pass it
  * as AccountSelect.preferredSpaceId and heart can defer loading other spaces.
  *
  * Set as early and synchronously as possible by the cold-start entry point;
@@ -208,12 +208,12 @@ interface PreferredSpaceIdHolder {
 
 - [ ] **Step 4: Run the test to verify it passes**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolderTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.launch.PreferredSpaceIdHolderTest"`
 Expected: PASS (4 tests).
 
 - [ ] **Step 5: Provide it as a Dagger singleton**
 
-In `ConfigModule.kt`, add an import `import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder` and, next to the existing `awaitAccountStartedManager()` provider, add:
+In `ConfigModule.kt`, add an import `import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder` and, next to the existing `awaitAccountStartedManager()` provider, add:
 
 ```kotlin
     @JvmStatic
@@ -225,9 +225,9 @@ In `ConfigModule.kt`, add an import `import com.anytypeio.anytype.domain.launch.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add domain/src/main/java/com/anytypeio/anytype/domain/launch/PreferredSpaceIdHolder.kt \
-        domain/src/test/java/com/anytypeio/anytype/domain/launch/PreferredSpaceIdHolderTest.kt \
-        app/src/main/java/com/anytypeio/anytype/di/main/ConfigModule.kt
+git add domain/src/main/java/com/aparokio/aparok/domain/launch/PreferredSpaceIdHolder.kt \
+        domain/src/test/java/com/aparokio/aparok/domain/launch/PreferredSpaceIdHolderTest.kt \
+        app/src/main/java/com/aparokio/aparok/di/main/ConfigModule.kt
 git commit --no-verify -m "GO-7292 Add PreferredSpaceIdHolder app singleton"
 ```
 
@@ -238,32 +238,32 @@ git commit --no-verify -m "GO-7292 Add PreferredSpaceIdHolder app singleton"
 Priority: `PreferredSpaceIdHolder.consume()` → `settings.getCurrentSpace()?.id` → `null`.
 
 **Files:**
-- Modify: `domain/src/main/java/com/anytypeio/anytype/domain/auth/interactor/LaunchAccount.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/feature/SplashDi.kt` (provider `provideLaunchAccountUseCase`, lines ~74-90)
-- Create: `domain/src/test/java/com/anytypeio/anytype/domain/auth/LaunchAccountTest.kt`
+- Modify: `domain/src/main/java/com/aparokio/aparok/domain/auth/interactor/LaunchAccount.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/feature/SplashDi.kt` (provider `provideLaunchAccountUseCase`, lines ~74-90)
+- Create: `domain/src/test/java/com/aparokio/aparok/domain/auth/LaunchAccountTest.kt`
 
 - [ ] **Step 1: Write the failing test**
 
 Create `LaunchAccountTest.kt` (mirrors `CreateAccountTest` mocking style):
 
 ```kotlin
-package com.anytypeio.anytype.domain.auth
+package com.aparokio.aparok.domain.auth
 
-import com.anytypeio.anytype.core_models.Command
-import com.anytypeio.anytype.core_models.NetworkMode
-import com.anytypeio.anytype.core_models.NetworkModeConfig
-import com.anytypeio.anytype.core_models.StubAccountSetup
-import com.anytypeio.anytype.core_models.primitives.SpaceId
-import com.anytypeio.anytype.domain.account.AwaitAccountStartManager
-import com.anytypeio.anytype.domain.auth.interactor.LaunchAccount
-import com.anytypeio.anytype.domain.auth.repo.AuthRepository
-import com.anytypeio.anytype.domain.common.DefaultCoroutineTestRule
-import com.anytypeio.anytype.domain.config.ConfigStorage
-import com.anytypeio.anytype.domain.config.UserSettingsRepository
-import com.anytypeio.anytype.domain.device.PathProvider
-import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder
-import com.anytypeio.anytype.domain.platform.InitialParamsProvider
-import com.anytypeio.anytype.domain.workspace.SpaceManager
+import com.aparokio.aparok.core_models.Command
+import com.aparokio.aparok.core_models.NetworkMode
+import com.aparokio.aparok.core_models.NetworkModeConfig
+import com.aparokio.aparok.core_models.StubAccountSetup
+import com.aparokio.aparok.core_models.primitives.SpaceId
+import com.aparokio.aparok.domain.account.AwaitAccountStartManager
+import com.aparokio.aparok.domain.auth.interactor.LaunchAccount
+import com.aparokio.aparok.domain.auth.repo.AuthRepository
+import com.aparokio.aparok.domain.common.DefaultCoroutineTestRule
+import com.aparokio.aparok.domain.config.ConfigStorage
+import com.aparokio.aparok.domain.config.UserSettingsRepository
+import com.aparokio.aparok.domain.device.PathProvider
+import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder
+import com.aparokio.aparok.domain.platform.InitialParamsProvider
+import com.aparokio.aparok.domain.workspace.SpaceManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -333,7 +333,7 @@ class LaunchAccountTest {
         PreferredSpaceIdHolder.Default.set("deeplink-space")
         settings.stub { onBlocking { getCurrentSpace() } doReturn SpaceId("last-space") }
 
-        launchAccount.run(com.anytypeio.anytype.domain.base.BaseUseCase.None)
+        launchAccount.run(com.aparokio.aparok.domain.base.BaseUseCase.None)
 
         assertEquals("deeplink-space", capturedCommand().preferredSpaceId)
     }
@@ -343,7 +343,7 @@ class LaunchAccountTest {
         stubCommon()
         settings.stub { onBlocking { getCurrentSpace() } doReturn SpaceId("last-space") }
 
-        launchAccount.run(com.anytypeio.anytype.domain.base.BaseUseCase.None)
+        launchAccount.run(com.aparokio.aparok.domain.base.BaseUseCase.None)
 
         assertEquals("last-space", capturedCommand().preferredSpaceId)
     }
@@ -353,7 +353,7 @@ class LaunchAccountTest {
         stubCommon()
         settings.stub { onBlocking { getCurrentSpace() } doReturn null }
 
-        launchAccount.run(com.anytypeio.anytype.domain.base.BaseUseCase.None)
+        launchAccount.run(com.aparokio.aparok.domain.base.BaseUseCase.None)
 
         assertEquals(null, capturedCommand().preferredSpaceId)
     }
@@ -364,7 +364,7 @@ class LaunchAccountTest {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.auth.LaunchAccountTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.auth.LaunchAccountTest"`
 Expected: FAIL — `LaunchAccount` has no `preferredSpaceIdHolder` constructor parameter.
 
 - [ ] **Step 3: Implement the resolution in `LaunchAccount`**
@@ -372,7 +372,7 @@ Expected: FAIL — `LaunchAccount` has no `preferredSpaceIdHolder` constructor p
 Edit `LaunchAccount.kt`. Add import:
 
 ```kotlin
-import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder
+import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder
 ```
 
 Add the constructor parameter (after `awaitAccountStartManager`, before `context`):
@@ -404,12 +404,12 @@ Add `preferredSpaceId = preferredSpaceId` to the `Command.AccountSelect(...)` co
 
 - [ ] **Step 4: Run the test to verify it passes**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.auth.LaunchAccountTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.auth.LaunchAccountTest"`
 Expected: PASS (3 tests).
 
 - [ ] **Step 5: Wire the new dependency into the DI provider**
 
-In `SplashDi.kt`, `provideLaunchAccountUseCase` (lines ~74-90): add an `import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder`, add `preferredSpaceIdHolder: PreferredSpaceIdHolder` to the function parameters, and pass `preferredSpaceIdHolder = preferredSpaceIdHolder` into the `LaunchAccount(...)` constructor call. Final form:
+In `SplashDi.kt`, `provideLaunchAccountUseCase` (lines ~74-90): add an `import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder`, add `preferredSpaceIdHolder: PreferredSpaceIdHolder` to the function parameters, and pass `preferredSpaceIdHolder = preferredSpaceIdHolder` into the `LaunchAccount(...)` constructor call. Final form:
 
 ```kotlin
     @JvmStatic
@@ -444,9 +444,9 @@ Expected: `BUILD SUCCESSFUL`
 - [ ] **Step 7: Commit**
 
 ```bash
-git add domain/src/main/java/com/anytypeio/anytype/domain/auth/interactor/LaunchAccount.kt \
-        domain/src/test/java/com/anytypeio/anytype/domain/auth/LaunchAccountTest.kt \
-        app/src/main/java/com/anytypeio/anytype/di/feature/SplashDi.kt
+git add domain/src/main/java/com/aparokio/aparok/domain/auth/interactor/LaunchAccount.kt \
+        domain/src/test/java/com/aparokio/aparok/domain/auth/LaunchAccountTest.kt \
+        app/src/main/java/com/aparokio/aparok/di/feature/SplashDi.kt
 git commit --no-verify -m "GO-7292 Resolve preferred space in LaunchAccount"
 ```
 
@@ -455,29 +455,29 @@ git commit --no-verify -m "GO-7292 Resolve preferred space in LaunchAccount"
 ## Task 4: `AccountPreloadRemainingSpaces` RPC + use case
 
 **Files:**
-- Modify: `middleware/src/main/java/com/anytypeio/anytype/middleware/service/MiddlewareService.kt` (ACCOUNT region, after `accountSelect`, line ~51)
-- Modify: `middleware/src/main/java/com/anytypeio/anytype/middleware/service/MiddlewareServiceImplementation.kt` (after `accountSelect` impl, ~line 130)
-- Modify: `middleware/src/main/java/com/anytypeio/anytype/middleware/interactor/Middleware.kt` (add a function near `accountSelect`)
-- Modify: `data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthRemote.kt`
-- Modify: `data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthRemoteDataStore.kt`
-- Modify: `data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthDataRepository.kt`
-- Modify: `middleware/src/main/java/com/anytypeio/anytype/middleware/auth/AuthMiddleware.kt`
-- Modify: `domain/src/main/java/com/anytypeio/anytype/domain/auth/repo/AuthRepository.kt`
-- Create: `domain/src/main/java/com/anytypeio/anytype/domain/auth/interactor/PreloadRemainingSpaces.kt`
-- Create: `domain/src/test/java/com/anytypeio/anytype/domain/auth/PreloadRemainingSpacesTest.kt`
+- Modify: `middleware/src/main/java/com/aparokio/aparok/middleware/service/MiddlewareService.kt` (ACCOUNT region, after `accountSelect`, line ~51)
+- Modify: `middleware/src/main/java/com/aparokio/aparok/middleware/service/MiddlewareServiceImplementation.kt` (after `accountSelect` impl, ~line 130)
+- Modify: `middleware/src/main/java/com/aparokio/aparok/middleware/interactor/Middleware.kt` (add a function near `accountSelect`)
+- Modify: `data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthRemote.kt`
+- Modify: `data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthRemoteDataStore.kt`
+- Modify: `data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthDataRepository.kt`
+- Modify: `middleware/src/main/java/com/aparokio/aparok/middleware/auth/AuthMiddleware.kt`
+- Modify: `domain/src/main/java/com/aparokio/aparok/domain/auth/repo/AuthRepository.kt`
+- Create: `domain/src/main/java/com/aparokio/aparok/domain/auth/interactor/PreloadRemainingSpaces.kt`
+- Create: `domain/src/test/java/com/aparokio/aparok/domain/auth/PreloadRemainingSpacesTest.kt`
 
 - [ ] **Step 1: Write the failing use-case test**
 
 Create `PreloadRemainingSpacesTest.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.auth
+package com.aparokio.aparok.domain.auth
 
-import com.anytypeio.anytype.domain.auth.interactor.PreloadRemainingSpaces
-import com.anytypeio.anytype.domain.auth.repo.AuthRepository
-import com.anytypeio.anytype.domain.base.AppCoroutineDispatchers
-import com.anytypeio.anytype.domain.base.Resultat
-import com.anytypeio.anytype.domain.common.DefaultCoroutineTestRule
+import com.aparokio.aparok.domain.auth.interactor.PreloadRemainingSpaces
+import com.aparokio.aparok.domain.auth.repo.AuthRepository
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.base.Resultat
+import com.aparokio.aparok.domain.common.DefaultCoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -531,7 +531,7 @@ class PreloadRemainingSpacesTest {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.auth.PreloadRemainingSpacesTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.auth.PreloadRemainingSpacesTest"`
 Expected: FAIL — unresolved `PreloadRemainingSpaces` / `AuthRepository.preloadRemainingSpaces`.
 
 - [ ] **Step 3: Add the domain contract**
@@ -548,14 +548,14 @@ In `AuthRepository.kt`, add after `suspend fun selectAccount(...)`:
 
 - [ ] **Step 4: Create the use case**
 
-Create `domain/src/main/java/com/anytypeio/anytype/domain/auth/interactor/PreloadRemainingSpaces.kt`:
+Create `domain/src/main/java/com/aparokio/aparok/domain/auth/interactor/PreloadRemainingSpaces.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.auth.interactor
+package com.aparokio.aparok.domain.auth.interactor
 
-import com.anytypeio.anytype.domain.auth.repo.AuthRepository
-import com.anytypeio.anytype.domain.base.AppCoroutineDispatchers
-import com.anytypeio.anytype.domain.base.ResultInteractor
+import com.aparokio.aparok.domain.auth.repo.AuthRepository
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.base.ResultInteractor
 import javax.inject.Inject
 
 /**
@@ -653,7 +653,7 @@ class PreloadRemainingSpaces @Inject constructor(
 
 - [ ] **Step 7: Run the use-case test to verify it passes**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.auth.PreloadRemainingSpacesTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.auth.PreloadRemainingSpacesTest"`
 Expected: PASS (2 tests).
 
 - [ ] **Step 8: Compile pure-Kotlin modules**
@@ -665,16 +665,16 @@ Expected: `BUILD SUCCESSFUL`
 - [ ] **Step 9: Commit**
 
 ```bash
-git add middleware/src/main/java/com/anytypeio/anytype/middleware/service/MiddlewareService.kt \
-        middleware/src/main/java/com/anytypeio/anytype/middleware/service/MiddlewareServiceImplementation.kt \
-        middleware/src/main/java/com/anytypeio/anytype/middleware/interactor/Middleware.kt \
-        middleware/src/main/java/com/anytypeio/anytype/middleware/auth/AuthMiddleware.kt \
-        data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthRemote.kt \
-        data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthRemoteDataStore.kt \
-        data/src/main/java/com/anytypeio/anytype/data/auth/repo/AuthDataRepository.kt \
-        domain/src/main/java/com/anytypeio/anytype/domain/auth/repo/AuthRepository.kt \
-        domain/src/main/java/com/anytypeio/anytype/domain/auth/interactor/PreloadRemainingSpaces.kt \
-        domain/src/test/java/com/anytypeio/anytype/domain/auth/PreloadRemainingSpacesTest.kt
+git add middleware/src/main/java/com/aparokio/aparok/middleware/service/MiddlewareService.kt \
+        middleware/src/main/java/com/aparokio/aparok/middleware/service/MiddlewareServiceImplementation.kt \
+        middleware/src/main/java/com/aparokio/aparok/middleware/interactor/Middleware.kt \
+        middleware/src/main/java/com/aparokio/aparok/middleware/auth/AuthMiddleware.kt \
+        data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthRemote.kt \
+        data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthRemoteDataStore.kt \
+        data/src/main/java/com/aparokio/aparok/data/auth/repo/AuthDataRepository.kt \
+        domain/src/main/java/com/aparokio/aparok/domain/auth/repo/AuthRepository.kt \
+        domain/src/main/java/com/aparokio/aparok/domain/auth/interactor/PreloadRemainingSpaces.kt \
+        domain/src/test/java/com/aparokio/aparok/domain/auth/PreloadRemainingSpacesTest.kt
 git commit --no-verify -m "GO-7292 Add AccountPreloadRemainingSpaces RPC and use case"
 ```
 
@@ -683,21 +683,21 @@ git commit --no-verify -m "GO-7292 Add AccountPreloadRemainingSpaces RPC and use
 ## Task 5: `RemainingSpacesPreloader` one-shot trigger
 
 **Files:**
-- Create: `domain/src/main/java/com/anytypeio/anytype/domain/launch/RemainingSpacesPreloader.kt`
-- Create: `domain/src/test/java/com/anytypeio/anytype/domain/launch/RemainingSpacesPreloaderTest.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/main/ConfigModule.kt`
+- Create: `domain/src/main/java/com/aparokio/aparok/domain/launch/RemainingSpacesPreloader.kt`
+- Create: `domain/src/test/java/com/aparokio/aparok/domain/launch/RemainingSpacesPreloaderTest.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/main/ConfigModule.kt`
 
 - [ ] **Step 1: Write the failing test**
 
 Create `RemainingSpacesPreloaderTest.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.launch
+package com.aparokio.aparok.domain.launch
 
-import com.anytypeio.anytype.domain.auth.interactor.PreloadRemainingSpaces
-import com.anytypeio.anytype.domain.auth.repo.AuthRepository
-import com.anytypeio.anytype.domain.base.AppCoroutineDispatchers
-import com.anytypeio.anytype.domain.common.DefaultCoroutineTestRule
+import com.aparokio.aparok.domain.auth.interactor.PreloadRemainingSpaces
+import com.aparokio.aparok.domain.auth.repo.AuthRepository
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.common.DefaultCoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -743,17 +743,17 @@ class RemainingSpacesPreloaderTest {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.launch.RemainingSpacesPreloaderTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.launch.RemainingSpacesPreloaderTest"`
 Expected: FAIL — unresolved `RemainingSpacesPreloader`.
 
 - [ ] **Step 3: Implement `RemainingSpacesPreloader`**
 
-Create `domain/src/main/java/com/anytypeio/anytype/domain/launch/RemainingSpacesPreloader.kt`:
+Create `domain/src/main/java/com/aparokio/aparok/domain/launch/RemainingSpacesPreloader.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.launch
+package com.aparokio.aparok.domain.launch
 
-import com.anytypeio.anytype.domain.auth.interactor.PreloadRemainingSpaces
+import com.aparokio.aparok.domain.auth.interactor.PreloadRemainingSpaces
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -790,12 +790,12 @@ class RemainingSpacesPreloader @Inject constructor(
 
 - [ ] **Step 4: Run the test to verify it passes**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.launch.RemainingSpacesPreloaderTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.launch.RemainingSpacesPreloaderTest"`
 Expected: PASS (1 test).
 
 - [ ] **Step 5: Provide it as a Dagger singleton**
 
-In `ConfigModule.kt`, add imports `import com.anytypeio.anytype.domain.auth.interactor.PreloadRemainingSpaces`, `import com.anytypeio.anytype.domain.auth.repo.AuthRepository`, `import com.anytypeio.anytype.domain.base.AppCoroutineDispatchers`, `import com.anytypeio.anytype.domain.launch.RemainingSpacesPreloader` (only those not already imported), and add:
+In `ConfigModule.kt`, add imports `import com.aparokio.aparok.domain.auth.interactor.PreloadRemainingSpaces`, `import com.aparokio.aparok.domain.auth.repo.AuthRepository`, `import com.aparokio.aparok.domain.base.AppCoroutineDispatchers`, `import com.aparokio.aparok.domain.launch.RemainingSpacesPreloader` (only those not already imported), and add:
 
 ```kotlin
     @JvmStatic
@@ -814,9 +814,9 @@ In `ConfigModule.kt`, add imports `import com.anytypeio.anytype.domain.auth.inte
 - [ ] **Step 6: Commit**
 
 ```bash
-git add domain/src/main/java/com/anytypeio/anytype/domain/launch/RemainingSpacesPreloader.kt \
-        domain/src/test/java/com/anytypeio/anytype/domain/launch/RemainingSpacesPreloaderTest.kt \
-        app/src/main/java/com/anytypeio/anytype/di/main/ConfigModule.kt
+git add domain/src/main/java/com/aparokio/aparok/domain/launch/RemainingSpacesPreloader.kt \
+        domain/src/test/java/com/aparokio/aparok/domain/launch/RemainingSpacesPreloaderTest.kt \
+        app/src/main/java/com/aparokio/aparok/di/main/ConfigModule.kt
 git commit --no-verify -m "GO-7292 Add RemainingSpacesPreloader one-shot trigger"
 ```
 
@@ -825,18 +825,18 @@ git commit --no-verify -m "GO-7292 Add RemainingSpacesPreloader one-shot trigger
 ## Task 6: `DeepLinkResolver.Action.preferredSpaceId()` extension
 
 **Files:**
-- Create: `domain/src/main/java/com/anytypeio/anytype/domain/misc/DeepLinkResolverExtensions.kt`
-- Create: `domain/src/test/java/com/anytypeio/anytype/domain/misc/DeepLinkResolverExtensionsTest.kt`
+- Create: `domain/src/main/java/com/aparokio/aparok/domain/misc/DeepLinkResolverExtensions.kt`
+- Create: `domain/src/test/java/com/aparokio/aparok/domain/misc/DeepLinkResolverExtensionsTest.kt`
 
 - [ ] **Step 1: Write the failing test**
 
 Create `DeepLinkResolverExtensionsTest.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.misc
+package com.aparokio.aparok.domain.misc
 
-import com.anytypeio.anytype.core_models.primitives.SpaceId
-import com.anytypeio.anytype.domain.misc.preferredSpaceId
+import com.aparokio.aparok.core_models.primitives.SpaceId
+import com.aparokio.aparok.domain.misc.preferredSpaceId
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -889,15 +889,15 @@ class DeepLinkResolverExtensionsTest {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.misc.DeepLinkResolverExtensionsTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.misc.DeepLinkResolverExtensionsTest"`
 Expected: FAIL — unresolved `preferredSpaceId`.
 
 - [ ] **Step 3: Implement the extension**
 
-Create `domain/src/main/java/com/anytypeio/anytype/domain/misc/DeepLinkResolverExtensions.kt`:
+Create `domain/src/main/java/com/aparokio/aparok/domain/misc/DeepLinkResolverExtensions.kt`:
 
 ```kotlin
-package com.anytypeio.anytype.domain.misc
+package com.aparokio.aparok.domain.misc
 
 /**
  * The space id a cold-start route points into, if any. Used to prime
@@ -914,14 +914,14 @@ fun DeepLinkResolver.Action.preferredSpaceId(): String? = when (this) {
 
 - [ ] **Step 4: Run the test to verify it passes**
 
-Run: `./gradlew :domain:test --tests "com.anytypeio.anytype.domain.misc.DeepLinkResolverExtensionsTest"`
+Run: `./gradlew :domain:test --tests "com.aparokio.aparok.domain.misc.DeepLinkResolverExtensionsTest"`
 Expected: PASS (5 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add domain/src/main/java/com/anytypeio/anytype/domain/misc/DeepLinkResolverExtensions.kt \
-        domain/src/test/java/com/anytypeio/anytype/domain/misc/DeepLinkResolverExtensionsTest.kt
+git add domain/src/main/java/com/aparokio/aparok/domain/misc/DeepLinkResolverExtensions.kt \
+        domain/src/test/java/com/aparokio/aparok/domain/misc/DeepLinkResolverExtensionsTest.kt
 git commit --no-verify -m "GO-7292 Add DeepLinkResolver.Action.preferredSpaceId extension"
 ```
 
@@ -932,18 +932,18 @@ git commit --no-verify -m "GO-7292 Add DeepLinkResolver.Action.preferredSpaceId 
 `MainViewModel` gets two new constructor deps: `preferredSpaceIdHolder: PreferredSpaceIdHolder`, `remainingSpacesPreloader: RemainingSpacesPreloader`. It (a) sets the holder synchronously at the top of `handleNewDeepLink`, and (b) fires `remainingSpacesPreloader.scheduleOnce(viewModelScope)` from the existing cold-start `awaitStart` collector (covers all cold starts) and at the end of `proceedWithNewDeepLink` (tighter for the deeplink path; deduped by the one-shot guard).
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/main/MainViewModel.kt`
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/main/MainViewModelFactory.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/feature/MainEntryDI.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/main/MainViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/main/MainViewModelFactory.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/feature/MainEntryDI.kt`
 
 - [ ] **Step 1: Add the constructor dependencies to `MainViewModel`**
 
 In `MainViewModel.kt`, add imports:
 
 ```kotlin
-import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder
-import com.anytypeio.anytype.domain.launch.RemainingSpacesPreloader
-import com.anytypeio.anytype.domain.misc.preferredSpaceId
+import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder
+import com.aparokio.aparok.domain.launch.RemainingSpacesPreloader
+import com.aparokio.aparok.domain.misc.preferredSpaceId
 ```
 
 Add to the primary constructor, right after `private val setInitialParams: SetInitialParams`:
@@ -986,7 +986,7 @@ At the very end of `proceedWithNewDeepLink(deeplink)` (after the closing of the 
 
 - [ ] **Step 5: Cascade through the factory**
 
-`MainViewModelFactory.kt` — add the same two `private val` parameters to the `@Inject constructor` (after `setInitialParams`) with imports `import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder` and `import com.anytypeio.anytype.domain.launch.RemainingSpacesPreloader`, and pass them into the `MainViewModel(...)` construction in `create()`:
+`MainViewModelFactory.kt` — add the same two `private val` parameters to the `@Inject constructor` (after `setInitialParams`) with imports `import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder` and `import com.aparokio.aparok.domain.launch.RemainingSpacesPreloader`, and pass them into the `MainViewModel(...)` construction in `create()`:
 
 ```kotlin
         setInitialParams = setInitialParams,
@@ -1013,7 +1013,7 @@ Add parameters to the function signature:
         remainingSpacesPreloader: RemainingSpacesPreloader
 ```
 
-with imports `import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder` and `import com.anytypeio.anytype.domain.launch.RemainingSpacesPreloader`. Both are provided as `@Singleton` (Tasks 2 and 5) so Dagger resolves them automatically.
+with imports `import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder` and `import com.aparokio.aparok.domain.launch.RemainingSpacesPreloader`. Both are provided as `@Singleton` (Tasks 2 and 5) so Dagger resolves them automatically.
 
 - [ ] **Step 7: Compile presentation (best-effort)**
 
@@ -1023,9 +1023,9 @@ Expected: `BUILD SUCCESSFUL` if the JNI artifact is available; otherwise verify 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/main/MainViewModel.kt \
-        presentation/src/main/java/com/anytypeio/anytype/presentation/main/MainViewModelFactory.kt \
-        app/src/main/java/com/anytypeio/anytype/di/feature/MainEntryDI.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/main/MainViewModel.kt \
+        presentation/src/main/java/com/aparokio/aparok/presentation/main/MainViewModelFactory.kt \
+        app/src/main/java/com/aparokio/aparok/di/feature/MainEntryDI.kt
 git commit --no-verify -m "GO-7292 Set preferred space from deeplink and trigger preload in MainViewModel"
 ```
 
@@ -1036,13 +1036,13 @@ git commit --no-verify -m "GO-7292 Set preferred space from deeplink and trigger
 The chat-push cold start enters via `SplashViewModel.onIntentTriggeredByChatPush(space, chat)` (line ~290), which already has the target space id. Set the holder synchronously at the top of that function (before `viewModelScope.launch`), so it is available to `LaunchAccount` regardless of coroutine ordering.
 
 **Files:**
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/splash/SplashViewModel.kt`
-- Modify: `presentation/src/main/java/com/anytypeio/anytype/presentation/splash/SplashViewModelFactory.kt`
-- Modify: `app/src/main/java/com/anytypeio/anytype/di/feature/SplashDi.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/splash/SplashViewModel.kt`
+- Modify: `presentation/src/main/java/com/aparokio/aparok/presentation/splash/SplashViewModelFactory.kt`
+- Modify: `app/src/main/java/com/aparokio/aparok/di/feature/SplashDi.kt`
 
 - [ ] **Step 1: Add the dependency to `SplashViewModel`**
 
-Add import `import com.anytypeio.anytype.domain.launch.PreferredSpaceIdHolder` and a constructor parameter `private val preferredSpaceIdHolder: PreferredSpaceIdHolder` (place it alongside the existing injected use cases in the `SplashViewModel` primary constructor).
+Add import `import com.aparokio.aparok.domain.launch.PreferredSpaceIdHolder` and a constructor parameter `private val preferredSpaceIdHolder: PreferredSpaceIdHolder` (place it alongside the existing injected use cases in the `SplashViewModel` primary constructor).
 
 - [ ] **Step 2: Set the holder at the top of `onIntentTriggeredByChatPush`**
 
@@ -1082,9 +1082,9 @@ Run: `./gradlew :presentation:compileDebugKotlin` (best-effort; see Task 7 Step 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add presentation/src/main/java/com/anytypeio/anytype/presentation/splash/SplashViewModel.kt \
-        presentation/src/main/java/com/anytypeio/anytype/presentation/splash/SplashViewModelFactory.kt \
-        app/src/main/java/com/anytypeio/anytype/di/feature/SplashDi.kt
+git add presentation/src/main/java/com/aparokio/aparok/presentation/splash/SplashViewModel.kt \
+        presentation/src/main/java/com/aparokio/aparok/presentation/splash/SplashViewModelFactory.kt \
+        app/src/main/java/com/aparokio/aparok/di/feature/SplashDi.kt
 git commit --no-verify -m "GO-7292 Set preferred space from chat push in SplashViewModel"
 ```
 
@@ -1096,10 +1096,10 @@ git commit --no-verify -m "GO-7292 Set preferred space from chat push in SplashV
 
 Run:
 ```bash
-./gradlew :domain:test --tests "com.anytypeio.anytype.domain.launch.*" \
-                       --tests "com.anytypeio.anytype.domain.auth.LaunchAccountTest" \
-                       --tests "com.anytypeio.anytype.domain.auth.PreloadRemainingSpacesTest" \
-                       --tests "com.anytypeio.anytype.domain.misc.DeepLinkResolverExtensionsTest"
+./gradlew :domain:test --tests "com.aparokio.aparok.domain.launch.*" \
+                       --tests "com.aparokio.aparok.domain.auth.LaunchAccountTest" \
+                       --tests "com.aparokio.aparok.domain.auth.PreloadRemainingSpacesTest" \
+                       --tests "com.aparokio.aparok.domain.misc.DeepLinkResolverExtensionsTest"
 ```
 Expected: `BUILD SUCCESSFUL`, all tests passing.
 
