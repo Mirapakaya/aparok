@@ -14,5 +14,5 @@ wire {
 }
 
 android {
-    namespace 'com.anytypeio.anytype.protocol'
+    namespace 'com.aparokio.aparok.protocol'
 }
