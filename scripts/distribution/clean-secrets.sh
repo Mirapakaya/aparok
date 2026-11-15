@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # Delete debug service account key
-rm -f scripts/distribution/anytype-debug-service-account-key.json
+rm -f scripts/distribution/aparok-debug-service-account-key.json

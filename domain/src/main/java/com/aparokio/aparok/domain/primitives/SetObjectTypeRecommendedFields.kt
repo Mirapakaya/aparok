@@ -1,0 +1,29 @@
+package com.aparokio.aparok.domain.primitives
+
+import com.aparokio.aparok.core_models.Command
+import com.aparokio.aparok.core_models.Command.ObjectTypeConflictingFields
+import com.aparokio.aparok.core_models.Id
+import com.aparokio.aparok.domain.base.AppCoroutineDispatchers
+import com.aparokio.aparok.domain.base.ResultInteractor
+import com.aparokio.aparok.domain.block.repo.BlockRepository
+import com.aparokio.aparok.domain.primitives.SetObjectTypeRecommendedFields.Params
+import javax.inject.Inject
+
+class SetObjectTypeRecommendedFields @Inject constructor(
+    private val repo: BlockRepository,
+    dispatchers: AppCoroutineDispatchers
+) : ResultInteractor<Params, Unit>(dispatchers.io) {
+
+    override suspend fun doWork(params: Params) {
+        val command = Command.ObjectTypeSetRecommendedFields(
+            objectTypeId = params.objectTypeId,
+            fields = params.fields
+        )
+        return repo.objectTypeSetRecommendedFields(command = command)
+    }
+
+    data class Params(
+        val objectTypeId: String,
+        val fields: List<Id>
+    )
+}

@@ -14,7 +14,7 @@ android {
         }
     }
 
-    namespace 'com.anytypeio.anytype.analytics'
+    namespace 'com.aparokio.aparok.analytics'
 }
 
 dependencies {

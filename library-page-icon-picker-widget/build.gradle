@@ -7,7 +7,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'com.anytypeio.anytype.library_page_icon_picker_widget'
+    namespace 'com.aparokio.aparok.library_page_icon_picker_widget'
 }
 
 dependencies {

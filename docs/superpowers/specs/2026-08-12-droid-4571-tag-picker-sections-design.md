@@ -1,7 +1,7 @@
 # DROID-4571 — Tag picker: "Selected" and "All values" sections
 
 Date: 2026-08-12
-Ticket: https://linear.app/anytype/issue/DROID-4571/properties-fix-selected-tag-options-no-longer-move-to-the-top-of-the
+Ticket: https://linear.app/aparok/issue/DROID-4571/properties-fix-selected-tag-options-no-longer-move-to-the-top-of-the
 Status: approved by the user (approach B, desktop parity)
 
 ## Problem
@@ -18,10 +18,10 @@ Each section supports drag-to-reorder. Android must match this layout.
 
 ## Current state
 
-- Screen: `core-ui/src/main/java/com/anytypeio/anytype/core_ui/relations/TagOrStatusCompose.kt`.
+- Screen: `core-ui/src/main/java/com/aparokio/aparok/core_ui/relations/TagOrStatusCompose.kt`.
   One `LazyColumn` with the `sh.calvin.reorderable` library. Drag is active
   only when `state.isRelationEditable`.
-- ViewModel: `presentation/src/main/java/com/anytypeio/anytype/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`.
+- ViewModel: `presentation/src/main/java/com/aparokio/aparok/presentation/relations/value/tagstatus/TagOrStatusValueViewModel.kt`.
   - `initViewState` builds a flat `List<RelationsListItem.Item>`.
   - `mapTagOptions` sets `isSelected` and the `number` badge. It does not sort.
   - `TagStatusAction.OnMove` sends the full displayed order to

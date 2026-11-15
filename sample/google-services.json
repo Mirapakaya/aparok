@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "75520222594",
-    "project_id": "anytype-sample-app",
-    "storage_bucket": "anytype-sample-app.appspot.com"
+    "project_id": "aparok-sample-app",
+    "storage_bucket": "aparok-sample-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:75520222594:android:d4012298e84c02fd701b9b",
         "android_client_info": {
-          "package_name": "com.anytypeio.anytype.sample"
+          "package_name": "com.aparokio.aparok.sample"
         }
       },
       "oauth_client": [
