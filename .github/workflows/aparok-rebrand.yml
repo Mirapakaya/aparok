@@ -2,6 +2,11 @@ name: Build Aparok APK and release
 on:
   workflow_dispatch:
 
+    inputs:
+      core_version:
+        description: 'Aparok core AAR version'
+        required: true
+        default: 'offline-latest'
 permissions:
   contents: write
 
@@ -365,6 +370,13 @@ jobs:
         run: |
           echo "gpr.usr=${{ github.actor }}" > github.properties
           echo "gpr.key=${{ secrets.GITHUB_TOKEN }}" >> github.properties
+      - name: Patch middleware dependency to aparok-core
+        run: |
+          set -euo pipefail
+          CORE_VERSION="${{ github.event.inputs.core_version }}"
+          sed -i 's|https://maven.pkg.github.com/anyproto/anytype-heart|https://maven.pkg.github.com/Mirapakaya/aparok-core|' settings.gradle
+          sed -i "s|middlewareVersion = \"[^\"]*\"|middlewareVersion = \"${CORE_VERSION}\"|" gradle/libs.versions.toml
+
 
       - name: Create apikeys.properties
         run: |
