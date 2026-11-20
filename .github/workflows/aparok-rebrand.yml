@@ -370,13 +370,40 @@ jobs:
         run: |
           echo "gpr.usr=${{ github.actor }}" > github.properties
           echo "gpr.key=${{ secrets.GITHUB_TOKEN }}" >> github.properties
-      - name: Patch middleware dependency to aparok-core
+      - name: Fetch Aparok core AAR from public release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          CORE_VERSION="${{ github.event.inputs.core_version }}"
-          sed -i 's|https://maven.pkg.github.com/anyproto/anytype-heart|https://maven.pkg.github.com/Mirapakaya/aparok-core|' settings.gradle
-          sed -i "s|middlewareVersion = \"[^\"]*\"|middlewareVersion = \"${CORE_VERSION}\"|" gradle/libs.versions.toml
-
+          if [ -n "${{ github.event.inputs.core_version }}" ]; then
+            TAG="${{ github.event.inputs.core_version }}"
+            ASSET_URL="https://github.com/Mirapakaya/aparok-core/releases/download/${TAG}/lib.aar"
+            SUM_URL="https://github.com/Mirapakaya/aparok-core/releases/download/${TAG}/lib.aar.sha256"
+          else
+            ASSET_URL="https://github.com/Mirapakaya/aparok-core/releases/latest/download/lib.aar"
+            SUM_URL="https://github.com/Mirapakaya/aparok-core/releases/latest/download/lib.aar.sha256"
+          fi
+          curl -fsSL --retry 3 --retry-delay 5 -o libs/lib.aar.sha256.new "$SUM_URL"
+          curl -fsSL --retry 3 --retry-delay 5 -o libs/lib.aar "$ASSET_URL"
+          cd libs
+          sha256sum -c lib.aar.sha256.new
+          mv lib.aar.sha256.new lib.aar.sha256
+          cd ..
+          ./gradlew :libs:publishToMavenLocal
+          # Remove upstream GitHub Packages repo so no PAT is needed.
+          python3 - <<'PY'
+          import re
+          with open('settings.gradle') as f:
+              content = f.read()
+          content = re.sub(
+              r"\s+maven {\n\s+name = \"GitHubPackages\"\n\s+url = uri\(\"https://maven\.pkg\.github\.com/[^\"]+\"\)\n\s+credentials \{[^}]+\}\n\s+\}",
+              "",
+              content,
+              count=1,
+          )
+          with open('settings.gradle', 'w') as f:
+              f.write(content)
+          PY
 
       - name: Create apikeys.properties
         run: |
