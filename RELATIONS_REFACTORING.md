@@ -1,7 +1,7 @@
 
 
 # Relations as object
-New API docs [here](https://linear.app/anytype/document/new-api-59b2f463bb78)
+New API docs [here](https://linear.app/aparok/document/new-api-59b2f463bb78)
 
 ### New Api
 - [ ] ObjectCreateRelation
@@ -29,9 +29,9 @@ New API docs [here](https://linear.app/anytype/document/new-api-59b2f463bb78)
 - [ ] ObjectTypeList
 
 ##### Classes to update
-- [ ] android-anytype/middleware/***/Middleware.kt
-- [ ] android-anytype/middleware/***/MiddlewareService.kt
-- [ ] android-anytype/middleware/***/MiddlewareServiceImplementation.kt
-- [ ] android-anytype/middleware/***/MiddlewareEventChannel.kt
-- [ ] android-anytype/middleware/***/MiddlewareEventMapper.kt
-- [ ] android-anytype/middleware/***/ToCoreModelMappers.kt
+- [ ] android-aparok/middleware/***/Middleware.kt
+- [ ] android-aparok/middleware/***/MiddlewareService.kt
+- [ ] android-aparok/middleware/***/MiddlewareServiceImplementation.kt
+- [ ] android-aparok/middleware/***/MiddlewareEventChannel.kt
+- [ ] android-aparok/middleware/***/MiddlewareEventMapper.kt
+- [ ] android-aparok/middleware/***/ToCoreModelMappers.kt

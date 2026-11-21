@@ -15,7 +15,7 @@ android {
         compose true
     }
 
-    namespace 'com.anytypeio.anytype.feature_properties'
+    namespace 'com.aparokio.aparok.feature_properties'
 }
 
 dependencies {

@@ -9,7 +9,7 @@ If you believe you have found a security vulnerability in any  repository of Any
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please send email to [security@anytype.io](mailto:security@anytype.io).
+Instead, please send email to [security@aparok.io](mailto:security@aparok.io).
 
 You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
 

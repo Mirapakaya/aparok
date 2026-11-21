@@ -1,5 +1,5 @@
 syntax = "proto3";
-package anytype.model;
+package aparok.model;
 option go_package = "pkg/lib/pb/model";
 
 // Diagnostics shared by all export formats. A completed export can contain
